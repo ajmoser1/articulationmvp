@@ -160,4 +160,36 @@
   .font-sans {
     font-family: var(--font-sans);
   }
+
+  .animate-pulse-recording {
+    animation: pulse-recording 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse-recording {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 hsl(var(--destructive) / 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 20px hsl(var(--destructive) / 0);
+  }
+
+  /* Keyframe animation for fade-in */
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out forwards;
 }
