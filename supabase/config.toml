@@ -1,0 +1,4 @@
+project_id = "tychfwdkbwejxlrxomdk"
+
+[functions.generate-topics]
+verify_jwt = false
