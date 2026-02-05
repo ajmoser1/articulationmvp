@@ -71,8 +71,7 @@ const Questionnaire = () => {
     
     if (validateForm()) {
       localStorage.setItem("userDemographics", JSON.stringify(formData));
-      // Navigate to next screen (placeholder for now)
-      navigate("/practice");
+      navigate("/topics");
     }
   };
 
