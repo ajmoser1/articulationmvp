@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { transcribeAudio } from "@/services/transcription";
+import { analyzeFillerWords } from "@/lib/fillerWords";
 import { Button } from "@/components/ui/button";
 
 type RecordingState = "idle" | "recording" | "processing";
@@ -21,6 +22,9 @@ const Practice = () => {
   const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  /** Seconds recorded when stop was triggered (60 - timeRemaining); used in onstop for analysis. */
+  const recordingDurationSecondsRef = useRef(60);
+  const timeRemainingRef = useRef(60);
 
   useEffect(() => {
     const storedTopic = localStorage.getItem("selectedTopic");
@@ -30,6 +34,11 @@ const Practice = () => {
     }
     setTopic(storedTopic);
   }, [navigate]);
+
+  // Keep ref in sync so stopRecording can read current value when user clicks stop
+  useEffect(() => {
+    timeRemainingRef.current = timeRemaining;
+  }, [timeRemaining]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -43,7 +52,11 @@ const Practice = () => {
     };
   }, []);
 
-  const stopRecording = useCallback(() => {
+  /** @param remainingSeconds - optional, from timer (e.g. 1 when hitting 0:01); if omitted, uses timeRemainingRef */
+  const stopRecording = useCallback((remainingSeconds?: number) => {
+    const remaining = remainingSeconds ?? timeRemainingRef.current;
+    recordingDurationSecondsRef.current = Math.max(0, 60 - remaining);
+
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
@@ -63,10 +76,14 @@ const Practice = () => {
   }, []);
 
   const startTranscription = useCallback(
-    async (blob: Blob) => {
+    async (blob: Blob, durationSeconds: number) => {
       try {
         const transcript = await transcribeAudio(blob);
-        navigate("/results", { state: { transcript } });
+        const durationMinutes = Math.max(0.1, durationSeconds / 60);
+        const analysisResults = analyzeFillerWords(transcript, durationMinutes);
+        navigate("/results", {
+          state: { transcript, analysisResults, durationMinutes },
+        });
       } catch (err) {
         const message =
           err instanceof Error ? err.message : "Transcription failed. Please try again.";
@@ -110,7 +127,8 @@ const Practice = () => {
           type: mimeType || "audio/webm",
         });
         setAudioBlob(blob);
-        startTranscription(blob);
+        const durationSeconds = recordingDurationSecondsRef.current;
+        startTranscription(blob, durationSeconds);
       };
 
       mediaRecorder.onerror = (event) => {
@@ -132,7 +150,7 @@ const Practice = () => {
       timerRef.current = setInterval(() => {
         setTimeRemaining((prev) => {
           if (prev <= 1) {
-            stopRecording();
+            stopRecording(prev);
             return 0;
           }
           return prev - 1;
@@ -260,7 +278,7 @@ const Practice = () => {
                       variant="outline"
                       onClick={() => {
                         setTranscriptionError(null);
-                        if (audioBlob) startTranscription(audioBlob);
+                        if (audioBlob) startTranscription(audioBlob, recordingDurationSecondsRef.current);
                       }}
                     >
                       Try again
