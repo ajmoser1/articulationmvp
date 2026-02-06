@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Loader2, MessageCircle, RefreshCw, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { getDemographics, type UserDemographics } from "@/lib/persistence";
+import { getDemographics, getExerciseHistory, type UserDemographics } from "@/lib/persistence";
 
 const FALLBACK_TOPICS = [
   "Describe your morning routine",
@@ -21,6 +21,13 @@ const TopicSelection = () => {
   const fetchTopics = async (demo: UserDemographics) => {
     setIsLoading(true);
     try {
+      // Get recent topics from exercise history (last 10) to avoid repetition
+      const history = getExerciseHistory();
+      const recentTopics = history
+        .slice(-10)
+        .map((entry) => entry.topic)
+        .filter((topic) => topic && topic.trim() !== "");
+
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-topics`,
         {
@@ -33,6 +40,8 @@ const TopicSelection = () => {
             gender: demo.gender,
             ageRange: demo.ageRange,
             country: demo.country,
+            // Send recent topics if any exist; empty array or undefined is fine
+            recentTopics: recentTopics.length > 0 ? recentTopics : undefined,
           }),
         }
       );

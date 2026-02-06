@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { gender, ageRange, country } = await req.json();
+    const { gender, ageRange, country, recentTopics } = await req.json();
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -21,14 +21,25 @@ serve(async (req) => {
     // Small random seed to encourage varied outputs even for identical demographics
     const seed = Math.random().toString(36).slice(2, 8);
 
+    // Build prompt with variety emphasis and optional recent topics avoidance
+    let recentTopicsNote = "";
+    if (Array.isArray(recentTopics) && recentTopics.length > 0) {
+      const topicsList = recentTopics
+        .slice(0, 10)
+        .map((t: string) => `- "${t}"`)
+        .join("\n");
+      recentTopicsNote = `\n\nIMPORTANT: The user has recently practiced with these topics. Avoid generating topics that are too similar to these:\n${topicsList}\n\nGenerate topics that feel fresh and different from the ones listed above.`;
+    }
+
     const prompt = `Seed: ${seed}.
 
 Generate 2 different casual conversation topics for a ${gender} who lives in ${country} between the ages of ${ageRange}.
 
 Requirements:
 - Each topic should be something they can speak about naturally for about 45 seconds to a minute and might elicit filler words.
-- Topics should be universal enough that anyone in this demographic would have something to say (daily routines, hobbies, local culture, personal preferences, etc.).
-- Avoid repeating the exact same topics or phrasing as in previous responses to similar prompts.
+- Topics should be universal enough that anyone in this demographic would have something to say (daily routines, hobbies, local culture, personal preferences, school/work, social life, technology, aspirations, etc.).
+- Aim for variety: the two topics should feel clearly different from each other, covering different aspects of life or different types of experiences.
+- Vary the themes across requests—don't always default to the same few topic types.${recentTopicsNote}
 
 Return the topics as a simple JSON array of exactly 2 strings, with no extra text or formatting.`;
 
