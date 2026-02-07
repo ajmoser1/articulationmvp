@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { transcribeAudio } from "@/services/transcription";
 import { analyzeFillerWords } from "@/lib/fillerWords";
 import { Button } from "@/components/ui/button";
+import { GlassCard } from "@/components/ui/glass-card";
 
 type RecordingState = "idle" | "recording" | "processing";
 
@@ -22,7 +23,6 @@ const Practice = () => {
   const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  /** Seconds recorded when stop was triggered (60 - timeRemaining); used in onstop for analysis. */
   const recordingDurationSecondsRef = useRef(60);
   const timeRemainingRef = useRef(60);
 
@@ -35,12 +35,10 @@ const Practice = () => {
     setTopic(storedTopic);
   }, [navigate]);
 
-  // Keep ref in sync so stopRecording can read current value when user clicks stop
   useEffect(() => {
     timeRemainingRef.current = timeRemaining;
   }, [timeRemaining]);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (timerRef.current) {
@@ -52,7 +50,6 @@ const Practice = () => {
     };
   }, []);
 
-  /** @param remainingSeconds - optional, from timer (e.g. 1 when hitting 0:01); if omitted, uses timeRemainingRef */
   const stopRecording = useCallback((remainingSeconds?: number) => {
     const remaining = remainingSeconds ?? timeRemainingRef.current;
     recordingDurationSecondsRef.current = Math.max(0, 60 - remaining);
@@ -95,7 +92,6 @@ const Practice = () => {
 
   const startRecording = async () => {
     try {
-      // Request microphone permission
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           echoCancellation: true,
@@ -107,7 +103,6 @@ const Practice = () => {
       streamRef.current = stream;
       audioChunksRef.current = [];
 
-      // Determine best supported MIME type for cross-browser compatibility
       const mimeType = getSupportedMimeType();
 
       const mediaRecorder = new MediaRecorder(stream, {
@@ -141,12 +136,10 @@ const Practice = () => {
         stopRecording();
       };
 
-      // Start recording
-      mediaRecorder.start(1000); // Collect data every second
+      mediaRecorder.start(1000);
       setRecordingState("recording");
       setTimeRemaining(60);
 
-      // Start countdown timer
       timerRef.current = setInterval(() => {
         setTimeRemaining((prev) => {
           if (prev <= 1) {
@@ -164,7 +157,7 @@ const Practice = () => {
           toast({
             title: "Microphone access denied",
             description:
-              "Please allow microphone access in your browser settings (for example, Safari or Chrome > Site Settings > Microphone).",
+              "Please allow microphone access in your browser settings.",
             variant: "destructive",
           });
         } else if (error.name === "NotFoundError") {
@@ -216,7 +209,7 @@ const Practice = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background px-6 py-8 pb-24 flex flex-col">
+    <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-24 flex flex-col">
       {/* Header */}
       <div className="mb-8">
         <button
@@ -230,10 +223,11 @@ const Practice = () => {
       </div>
 
       <div className="flex-1 max-w-md mx-auto w-full flex flex-col items-center">
-        {/* Topic Display */}
-        <div
-          className="w-full mb-12 opacity-0 animate-fade-in text-center"
+        {/* Topic Display in Glass Card */}
+        <GlassCard
+          className="w-full mb-12 p-6 text-center opacity-0 animate-fade-in"
           style={{ animationDelay: "0.1s" }}
+          hover={false}
         >
           <p className="text-sm text-muted-foreground font-sans mb-2 uppercase tracking-wide">
             Your Topic
@@ -241,7 +235,7 @@ const Practice = () => {
           <h1 className="text-2xl font-serif font-bold text-foreground leading-relaxed">
             {topic}
           </h1>
-        </div>
+        </GlassCard>
 
         {/* Timer */}
         <div
@@ -268,55 +262,64 @@ const Practice = () => {
           style={{ animationDelay: "0.3s" }}
         >
           {recordingState === "processing" ? (
-            <div className="flex flex-col items-center gap-6 w-full max-w-sm">
-              {transcriptionError ? (
-                <>
-                  <p className="text-sm text-destructive font-sans text-center">
-                    {transcriptionError}
-                  </p>
-                  <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setTranscriptionError(null);
-                        if (audioBlob) startTranscription(audioBlob, recordingDurationSecondsRef.current);
-                      }}
-                    >
-                      Try again
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      onClick={() => {
-                        setTranscriptionError(null);
-                        setAudioBlob(null);
-                        setRecordingState("idle");
-                        setTimeRemaining(60);
-                      }}
-                    >
-                      Record again
-                    </Button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="w-full h-1.5 rounded-full bg-secondary overflow-hidden">
-                    <div className="h-full w-1/3 rounded-full bg-primary/60 animate-analyzing" />
-                  </div>
-                  <p className="text-muted-foreground font-serif animate-pulse">
-                    Analyzing your speech...
-                  </p>
-                </>
-              )}
-            </div>
+            <GlassCard className="p-8 w-full max-w-sm" hover={false}>
+              <div className="flex flex-col items-center gap-6">
+                {transcriptionError ? (
+                  <>
+                    <p className="text-sm text-destructive font-sans text-center">
+                      {transcriptionError}
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">
+                      <Button
+                        variant="outline"
+                        className="btn-glass"
+                        onClick={() => {
+                          setTranscriptionError(null);
+                          if (audioBlob) startTranscription(audioBlob, recordingDurationSecondsRef.current);
+                        }}
+                      >
+                        Try again
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        className="btn-glass"
+                        onClick={() => {
+                          setTranscriptionError(null);
+                          setAudioBlob(null);
+                          setRecordingState("idle");
+                          setTimeRemaining(60);
+                        }}
+                      >
+                        Record again
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-full h-1.5 rounded-full bg-white/30 overflow-hidden">
+                      <div className="h-full w-1/3 rounded-full bg-primary/60 animate-analyzing" />
+                    </div>
+                    <p className="text-muted-foreground font-serif animate-pulse-gentle">
+                      Analyzing your speech...
+                    </p>
+                  </>
+                )}
+              </div>
+            </GlassCard>
           ) : (
             <button
               onClick={handleRecordClick}
               className={cn(
                 "w-32 h-32 rounded-full flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-ring focus:ring-offset-4 focus:ring-offset-background",
                 recordingState === "idle"
-                  ? "bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl hover:scale-105"
+                  ? "bg-primary hover:bg-primary/90 shadow-button hover:shadow-elevated hover:scale-105"
                   : "bg-destructive animate-pulse-recording"
               )}
+              style={{
+                boxShadow: recordingState === "idle" 
+                  ? "0 10px 40px rgba(198, 123, 92, 0.35), inset 0 1px 0 rgba(255,255,255,0.3)"
+                  : undefined
+              }}
               aria-label={recordingState === "idle" ? "Start recording" : "Stop recording"}
             >
               {recordingState === "idle" ? (

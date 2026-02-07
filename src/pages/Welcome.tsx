@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { GlassCard } from "@/components/ui/glass-card";
 import { MessageCircle, Sparkles, Target } from "lucide-react";
 import { getDemographics } from "@/lib/persistence";
 
@@ -16,12 +17,12 @@ const Welcome = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-background px-6 py-12 pb-24 flex flex-col">
+    <div className="min-h-screen bg-gradient-layered px-6 py-12 pb-24 flex flex-col">
       {/* Header */}
       <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full">
         {/* Icon */}
         <div className="mb-8 opacity-0 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+          <div className="w-16 h-16 rounded-2xl glass-subtle flex items-center justify-center">
             <MessageCircle className="w-8 h-8 text-primary" />
           </div>
         </div>
@@ -45,22 +46,25 @@ const Welcome = () => {
           Communicate with confidence and make every word count.
         </p>
 
-        {/* Features */}
-        <div 
-          className="space-y-4 mb-12 opacity-0 animate-fade-in"
+        {/* Features in Glass Card */}
+        <GlassCard 
+          className="p-6 mb-12 opacity-0 animate-fade-in"
           style={{ animationDelay: "0.4s" }}
+          hover={false}
         >
-          <FeatureItem 
-            icon={<Target className="w-5 h-5" />}
-            title="Identify patterns"
-            description="Understand your unique speech habits"
-          />
-          <FeatureItem 
-            icon={<Sparkles className="w-5 h-5" />}
-            title="Practice daily"
-            description="Build lasting communication skills"
-          />
-        </div>
+          <div className="space-y-4">
+            <FeatureItem 
+              icon={<Target className="w-5 h-5" />}
+              title="Identify patterns"
+              description="Understand your unique speech habits"
+            />
+            <FeatureItem 
+              icon={<Sparkles className="w-5 h-5" />}
+              title="Practice daily"
+              description="Build lasting communication skills"
+            />
+          </div>
+        </GlassCard>
 
         {/* CTA Button */}
         <div 
@@ -69,7 +73,7 @@ const Welcome = () => {
         >
           <Button 
             onClick={() => navigate("/questionnaire")}
-            className="btn-warm w-full py-6 text-lg rounded-xl font-sans"
+            className="btn-warm w-full py-6 text-lg font-sans"
             size="lg"
           >
             Get Started
@@ -91,7 +95,7 @@ interface FeatureItemProps {
 
 const FeatureItem = ({ icon, title, description }: FeatureItemProps) => (
   <div className="flex items-start gap-4">
-    <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center flex-shrink-0 text-primary">
+    <div className="w-10 h-10 rounded-xl glass-subtle flex items-center justify-center flex-shrink-0 text-primary">
       {icon}
     </div>
     <div>

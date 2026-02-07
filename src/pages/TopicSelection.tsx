@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Loader2, MessageCircle, RefreshCw, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { getDemographics, getExerciseHistory, type UserDemographics } from "@/lib/persistence";
+import { GlassCard } from "@/components/ui/glass-card";
 
 const FALLBACK_TOPICS = [
   "Describe your morning routine",
@@ -21,7 +20,6 @@ const TopicSelection = () => {
   const fetchTopics = async (demo: UserDemographics) => {
     setIsLoading(true);
     try {
-      // Get recent topics from exercise history (last 10) to avoid repetition
       const history = getExerciseHistory();
       const recentTopics = history
         .slice(-10)
@@ -40,7 +38,6 @@ const TopicSelection = () => {
             gender: demo.gender,
             ageRange: demo.ageRange,
             country: demo.country,
-            // Send recent topics if any exist; empty array or undefined is fine
             recentTopics: recentTopics.length > 0 ? recentTopics : undefined,
           }),
         }
@@ -101,7 +98,7 @@ const TopicSelection = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background px-6 py-8 pb-24 flex flex-col">
+    <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-24 flex flex-col">
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <button
@@ -111,11 +108,11 @@ const TopicSelection = () => {
           <ArrowLeft className="w-4 h-4" />
           Back
         </button>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           {!isLoading && (
             <button
               onClick={handleRefresh}
-              className="flex items-center gap-2 h-11 px-4 text-muted-foreground hover:text-foreground transition-colors font-sans text-sm"
+              className="flex items-center gap-2 h-11 px-4 btn-glass text-foreground font-sans text-sm"
             >
               <RefreshCw className="w-4 h-4" />
               New topics
@@ -123,7 +120,7 @@ const TopicSelection = () => {
           )}
           <button
             onClick={() => navigate("/questionnaire")}
-            className="h-11 w-11 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground transition-colors"
+            className="h-11 w-11 flex items-center justify-center glass-subtle text-muted-foreground hover:text-foreground transition-colors"
             aria-label="Edit demographics"
           >
             <Settings className="w-4 h-4" />
@@ -145,31 +142,36 @@ const TopicSelection = () => {
         {/* Topics */}
         <div className="flex-1 flex flex-col gap-4">
           {isLoading ? (
-            <div className="flex-1 flex flex-col items-center justify-center gap-4 opacity-0 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+            <GlassCard 
+              className="flex-1 flex flex-col items-center justify-center gap-4 p-8 opacity-0 animate-fade-in" 
+              style={{ animationDelay: "0.2s" }}
+              hover={false}
+            >
               <Loader2 className="w-8 h-8 text-primary animate-spin" />
               <p className="text-muted-foreground font-serif text-center">
                 Generating personalized topics...
               </p>
-            </div>
+            </GlassCard>
           ) : (
             topics.map((topic, index) => (
-              <Card
+              <GlassCard
                 key={index}
-                className="card-warm cursor-pointer hover:scale-[1.02] transition-transform opacity-0 animate-fade-in"
+                variant="interactive"
+                className="p-6 opacity-0 animate-fade-in"
                 style={{ animationDelay: `${0.2 + index * 0.1}s` }}
                 onClick={() => handleTopicSelect(topic)}
               >
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
-                    <MessageCircle className="w-5 h-5 text-foreground" />
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full glass-subtle flex items-center justify-center flex-shrink-0">
+                    <MessageCircle className="w-5 h-5 text-primary" />
                   </div>
                   <div className="flex-1">
                     <p className="text-foreground font-serif text-lg leading-relaxed">
                       {topic}
                     </p>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </GlassCard>
             ))
           )}
         </div>

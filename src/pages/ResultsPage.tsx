@@ -4,12 +4,12 @@ import {
   getProgressStats,
   type StoredExerciseResult,
 } from "@/lib/persistence";
+import { GlassCard } from "@/components/ui/glass-card";
 
 const ProgressPage = () => {
   const history = useMemo<StoredExerciseResult[]>(() => getExerciseHistory(), []);
   const stats = useMemo(() => getProgressStats(), []);
 
-  // Most recent first
   const sorted = useMemo(
     () =>
       [...history].sort(
@@ -34,60 +34,57 @@ const ProgressPage = () => {
       : "You're maintaining steady performance.";
 
   return (
-    <div
-      className="min-h-screen px-6 py-10 pb-24 flex flex-col items-center"
-      style={{ backgroundColor: "#FAF9F6" }}
-    >
-      <div className="w-full max-w-3xl space-y-10">
+    <div className="min-h-screen bg-gradient-layered px-6 py-10 pb-24 flex flex-col items-center">
+      <div className="w-full max-w-3xl space-y-8">
         <header>
-          <h1 className="text-2xl font-serif font-semibold text-stone-800 mb-2">
+          <h1 className="text-2xl font-serif font-semibold text-foreground mb-2">
             Your progress
           </h1>
-          <p className="text-sm text-stone-600 font-sans">
+          <p className="text-sm text-muted-foreground font-sans">
             Track how your filler word usage changes over time.
           </p>
         </header>
 
         {/* Summary stats */}
-        <section className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div className="rounded-xl border border-stone-200 bg-white/80 p-4 shadow-sm">
-            <p className="text-xs uppercase tracking-wide text-stone-500 font-sans mb-1">
+        <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <GlassCard className="p-5" hover={false}>
+            <p className="text-xs uppercase tracking-wide text-muted-foreground font-sans mb-1">
               Exercises completed
             </p>
-            <p className="text-3xl font-serif font-semibold text-stone-800">
+            <p className="text-3xl font-serif font-semibold text-foreground">
               {stats.totalExercises}
             </p>
-          </div>
-          <div className="rounded-xl border border-stone-200 bg-white/80 p-4 shadow-sm">
-            <p className="text-xs uppercase tracking-wide text-stone-500 font-sans mb-1">
+          </GlassCard>
+          <GlassCard className="p-5" hover={false}>
+            <p className="text-xs uppercase tracking-wide text-muted-foreground font-sans mb-1">
               Avg fillers / min
             </p>
-            <p className="text-3xl font-serif font-semibold text-stone-800">
+            <p className="text-3xl font-serif font-semibold text-foreground">
               {stats.averageFPM.toFixed(1)}
             </p>
-          </div>
-          <div className="rounded-xl border border-stone-200 bg-white/80 p-4 shadow-sm">
-            <p className="text-xs uppercase tracking-wide text-stone-500 font-sans mb-1">
+          </GlassCard>
+          <GlassCard className="p-5" hover={false}>
+            <p className="text-xs uppercase tracking-wide text-muted-foreground font-sans mb-1">
               Best (lowest) FPM
             </p>
-            <p className="text-3xl font-serif font-semibold text-stone-800">
+            <p className="text-3xl font-serif font-semibold text-foreground">
               {bestFPM.toFixed(1)}
             </p>
-          </div>
+          </GlassCard>
         </section>
 
         {/* Trend indicator */}
-        <section className="rounded-xl border border-stone-200 bg-white/80 p-4 shadow-sm">
-          <p className="text-sm font-serif text-stone-800">{trendMessage}</p>
-        </section>
+        <GlassCard className="p-5" hover={false}>
+          <p className="text-sm font-serif text-foreground">{trendMessage}</p>
+        </GlassCard>
 
         {/* Exercise history */}
         <section className="space-y-4">
-          <h2 className="text-lg font-serif font-semibold text-stone-800">
+          <h2 className="text-lg font-serif font-semibold text-foreground">
             Exercise history
           </h2>
           {sorted.length === 0 ? (
-            <p className="text-sm text-stone-600 font-sans">
+            <p className="text-sm text-muted-foreground font-sans">
               You haven&apos;t completed any exercises yet. Once you finish a practice,
               your results will appear here.
             </p>
@@ -108,29 +105,30 @@ const ProgressPage = () => {
                 }
 
                 return (
-                  <li
+                  <GlassCard
                     key={entry.timestamp + entry.topic}
-                    className="rounded-lg border border-stone-200 bg-white/80 p-4 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
+                    className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
+                    hover={false}
                   >
                     <div>
-                      <p className="font-serif text-stone-800">
+                      <p className="font-serif text-foreground">
                         {entry.topic || "Practice"}
                       </p>
-                      <p className="text-xs text-stone-500 font-sans">
+                      <p className="text-xs text-muted-foreground font-sans">
                         {new Date(entry.timestamp).toLocaleString()}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-sans text-stone-800">
+                      <p className="text-sm font-sans text-foreground">
                         {entry.fillersPerMinute.toFixed(1)} FPM
                       </p>
                       {indicator && (
-                        <p className="text-xs text-stone-500 font-sans mt-0.5">
+                        <p className="text-xs text-muted-foreground font-sans mt-0.5">
                           {indicator}
                         </p>
                       )}
                     </div>
-                  </li>
+                  </GlassCard>
                 );
               })}
             </ul>
@@ -139,7 +137,7 @@ const ProgressPage = () => {
 
         {/* Local storage note */}
         <section>
-          <p className="text-xs text-stone-500 font-sans">
+          <p className="text-xs text-muted-foreground font-sans">
             Your data is stored locally. Clearing browser data will erase your progress.
           </p>
         </section>

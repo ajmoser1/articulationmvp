@@ -6,6 +6,7 @@ import {
   type FillerCategory,
 } from "@/lib/fillerWords";
 import { Button } from "@/components/ui/button";
+import { GlassCard } from "@/components/ui/glass-card";
 import { saveExerciseResult } from "@/lib/persistence";
 
 const TYPEWRITER_MS_PER_CHAR = 60;
@@ -16,7 +17,6 @@ type ResultsLocationState = {
   durationMinutes?: number;
 } | null;
 
-/** Build segments of visible transcript with filler ranges highlighted */
 function buildSegments(
   transcript: string,
   visibleLength: number,
@@ -53,7 +53,6 @@ function buildSegments(
   return segments;
 }
 
-/** Filler start positions for triggering flash when typewriter reaches them */
 function getFillerStartPositions(
   fillerPositions: { word: string; position: number }[]
 ): Set<number> {
@@ -137,7 +136,6 @@ const Results = () => {
     }
   }, [transcript, navigate]);
 
-  // Persist this exercise to localStorage once we have transcript + analysis.
   useEffect(() => {
     if (!analysisResults || typeof transcript !== "string" || transcript.trim() === "") {
       return;
@@ -188,49 +186,42 @@ const Results = () => {
     analysisResults;
 
   return (
-    <div
-      className="min-h-screen flex flex-col pb-24"
-      style={{ backgroundColor: "#FAF9F6" }}
-    >
-      {/* Flash overlay: remount per flash so animation runs */}
+    <div className="min-h-screen bg-gradient-layered flex flex-col pb-24">
+      {/* Flash overlay */}
       {flashKey > 0 && <div key={flashKey} className="results-flash-overlay" />}
 
-      <div className="flex-1 px-6 py-10 max-w-3xl mx-auto w-full flex flex-col gap-10">
+      <div className="flex-1 px-6 py-10 max-w-3xl mx-auto w-full flex flex-col gap-8">
         {/* Top metrics */}
-        <section className="flex flex-wrap gap-8 gap-y-6">
-          <div>
-            <p className="text-sm uppercase tracking-wide text-stone-500 font-sans mb-1">
+        <section className="flex flex-wrap gap-4">
+          <GlassCard className="flex-1 min-w-[140px] p-6" hover={false}>
+            <p className="text-sm uppercase tracking-wide text-muted-foreground font-sans mb-1">
               Total filler words
             </p>
-            <p className="text-4xl font-serif font-bold text-stone-800 tabular-nums">
+            <p className="text-4xl font-serif font-bold text-foreground tabular-nums">
               {totalFillerWords}
             </p>
-          </div>
-          <div>
-            <p className="text-sm uppercase tracking-wide text-stone-500 font-sans mb-1">
+          </GlassCard>
+          <GlassCard className="flex-1 min-w-[140px] p-6" hover={false}>
+            <p className="text-sm uppercase tracking-wide text-muted-foreground font-sans mb-1">
               Fillers per minute
             </p>
-            <p className="text-4xl font-serif font-bold text-stone-800 tabular-nums">
+            <p className="text-4xl font-serif font-bold text-foreground tabular-nums">
               {fillersPerMinute.toFixed(1)}
             </p>
-          </div>
+          </GlassCard>
         </section>
 
         {/* Transcript with typewriter and filler highlight */}
-        <section>
-          <p className="text-sm uppercase tracking-wide text-stone-500 font-sans mb-3">
+        <GlassCard className="p-6" hover={false}>
+          <p className="text-sm uppercase tracking-wide text-muted-foreground font-sans mb-3">
             Your transcript
           </p>
-          <div
-            className="rounded-xl border border-stone-200 p-6 shadow-sm font-serif text-stone-800 leading-relaxed whitespace-pre-wrap"
-            style={{ backgroundColor: "#FAF9F6", minHeight: "8rem" }}
-          >
+          <div className="font-serif text-foreground leading-relaxed whitespace-pre-wrap min-h-[8rem]">
             {segments.map((seg, i) =>
               seg.type === "filler" ? (
                 <span
                   key={i}
-                  className="rounded px-0.5"
-                  style={{ backgroundColor: "#FBE8E8", color: "#D64545" }}
+                  className="rounded px-0.5 bg-destructive/15 text-destructive"
                 >
                   {seg.text}
                 </span>
@@ -239,22 +230,22 @@ const Results = () => {
               )
             )}
             {!typewriterDone && (
-              <span className="inline-block w-2 h-4 bg-stone-600 animate-pulse ml-0.5 align-baseline" />
+              <span className="inline-block w-2 h-4 bg-foreground/60 animate-pulse-gentle ml-0.5 align-baseline" />
             )}
           </div>
-        </section>
+        </GlassCard>
 
         {/* Detailed metrics */}
-        <section className="space-y-6">
-          <h2 className="text-lg font-serif font-semibold text-stone-800">
+        <GlassCard className="p-6 space-y-6" hover={false}>
+          <h2 className="text-lg font-serif font-semibold text-foreground">
             Breakdown
           </h2>
 
           <div>
-            <p className="text-sm text-stone-500 font-sans mb-2">
+            <p className="text-sm text-muted-foreground font-sans mb-2">
               By category
             </p>
-            <ul className="flex flex-wrap gap-x-6 gap-y-1 text-stone-700 font-sans">
+            <ul className="flex flex-wrap gap-x-6 gap-y-1 text-foreground font-sans">
               {(Object.keys(categoryCounts) as FillerCategory[]).map((cat) => (
                 <li key={cat}>
                   {CATEGORY_LABELS[cat]}: {categoryCounts[cat]}
@@ -265,10 +256,10 @@ const Results = () => {
 
           {topFiveFillers.length > 0 && (
             <div>
-              <p className="text-sm text-stone-500 font-sans mb-2">
+              <p className="text-sm text-muted-foreground font-sans mb-2">
                 Top fillers
               </p>
-              <ul className="text-stone-700 font-sans space-y-1">
+              <ul className="text-foreground font-sans space-y-1">
                 {topFiveFillers.map(([word, count]) => (
                   <li key={word}>
                     &ldquo;{word}&rdquo; — {count}
@@ -279,30 +270,30 @@ const Results = () => {
           )}
 
           <div>
-            <p className="text-sm text-stone-500 font-sans mb-2">
+            <p className="text-sm text-muted-foreground font-sans mb-2">
               Distribution
             </p>
-            <p className="text-stone-700 font-sans">
+            <p className="text-foreground font-sans">
               Beginning: {distributionAnalysis.beginning}, Middle:{" "}
               {distributionAnalysis.middle}, End: {distributionAnalysis.end}
             </p>
-            <p className="mt-2 text-stone-600 font-serif text-sm italic">
+            <p className="mt-2 text-muted-foreground font-serif text-sm italic">
               {distributionInsight}
             </p>
           </div>
-        </section>
+        </GlassCard>
 
         {/* Buttons */}
         <section className="flex flex-wrap gap-4 pt-4">
           <Button
             onClick={() => navigate("/topics")}
-            className="bg-[hsl(15,60%,50%)] hover:bg-[hsl(15,60%,45%)] text-white font-sans"
+            className="btn-warm font-sans"
           >
             Try Another Topic
           </Button>
           <Button
             variant="secondary"
-            className="font-sans text-stone-700"
+            className="btn-glass font-sans"
             onClick={() => navigate("/progress")}
           >
             View Progress

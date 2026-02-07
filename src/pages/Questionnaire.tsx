@@ -14,6 +14,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { saveDemographics } from "@/lib/persistence";
+import { GlassCard } from "@/components/ui/glass-card";
 
 const COUNTRIES = [
   "United States", "United Kingdom", "Canada", "Australia", "Germany",
@@ -85,7 +86,7 @@ const Questionnaire = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background px-6 py-8 pb-24 flex flex-col">
+    <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-24 flex flex-col">
       {/* Header */}
       <div className="mb-8">
         <button 
@@ -108,136 +109,140 @@ const Questionnaire = () => {
           </p>
         </div>
 
-        {/* Form */}
-        <form 
-          className="space-y-6 opacity-0 animate-fade-in"
+        {/* Form inside Glass Card */}
+        <GlassCard 
+          className="p-6 md:p-8 opacity-0 animate-fade-in"
           style={{ animationDelay: "0.2s" }}
-          onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}
         >
-          {/* Gender */}
-          <div className="space-y-2">
-            <Label htmlFor="gender" className="text-foreground font-sans font-medium">
-              Gender
-            </Label>
-            <Select 
-              value={formData.gender} 
-              onValueChange={(value) => updateField("gender", value)}
-            >
-              <SelectTrigger 
-                id="gender"
-                className={cn(
-                  "h-14 text-base font-sans bg-card border-border",
-                  touched.gender && errors.gender && "border-destructive"
-                )}
+          <form 
+            className="space-y-6"
+            onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}
+          >
+            {/* Gender */}
+            <div className="space-y-2">
+              <Label htmlFor="gender" className="text-foreground font-sans font-medium">
+                Gender
+              </Label>
+              <Select 
+                value={formData.gender} 
+                onValueChange={(value) => updateField("gender", value)}
               >
-                <SelectValue placeholder="Select your gender" />
-              </SelectTrigger>
-              <SelectContent className="bg-popover border-border">
-                <SelectItem value="male">Male</SelectItem>
-                <SelectItem value="female">Female</SelectItem>
-                <SelectItem value="non-binary">Non-binary</SelectItem>
-                <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
-              </SelectContent>
-            </Select>
-            {touched.gender && errors.gender && (
-              <p className="text-sm text-destructive font-sans">{errors.gender}</p>
-            )}
-          </div>
-
-          {/* Age Range */}
-          <div className="space-y-2">
-            <Label htmlFor="ageRange" className="text-foreground font-sans font-medium">
-              Age range
-            </Label>
-            <Select 
-              value={formData.ageRange} 
-              onValueChange={(value) => updateField("ageRange", value)}
-            >
-              <SelectTrigger 
-                id="ageRange"
-                className={cn(
-                  "h-14 text-base font-sans bg-card border-border",
-                  touched.ageRange && errors.ageRange && "border-destructive"
-                )}
-              >
-                <SelectValue placeholder="Select your age range" />
-              </SelectTrigger>
-              <SelectContent className="bg-popover border-border">
-                <SelectItem value="under-18">Under 18</SelectItem>
-                <SelectItem value="18-24">18-24</SelectItem>
-                <SelectItem value="25-34">25-34</SelectItem>
-                <SelectItem value="35-44">35-44</SelectItem>
-                <SelectItem value="45-54">45-54</SelectItem>
-                <SelectItem value="55-64">55-64</SelectItem>
-                <SelectItem value="65+">65+</SelectItem>
-              </SelectContent>
-            </Select>
-            {touched.ageRange && errors.ageRange && (
-              <p className="text-sm text-destructive font-sans">{errors.ageRange}</p>
-            )}
-          </div>
-
-          {/* Country - Searchable */}
-          <div className="space-y-2">
-            <Label htmlFor="country" className="text-foreground font-sans font-medium">
-              Country of residence
-            </Label>
-            <Popover open={countryOpen} onOpenChange={setCountryOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={countryOpen}
+                <SelectTrigger 
+                  id="gender"
                   className={cn(
-                    "w-full h-14 justify-between text-base font-sans font-normal bg-card border-border",
-                    !formData.country && "text-muted-foreground",
-                    touched.country && errors.country && "border-destructive"
+                    "h-14 text-base font-sans input-glass",
+                    touched.gender && errors.gender && "border-destructive"
                   )}
                 >
-                  {formData.country || "Search for your country"}
-                  <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 bg-popover border-border" align="start">
-                <Command className="bg-popover">
-                  <CommandInput placeholder="Search countries..." className="h-12" />
-                  <CommandList>
-                    <CommandEmpty>No country found.</CommandEmpty>
-                    <CommandGroup className="max-h-64 overflow-auto">
-                      {COUNTRIES.map((country) => (
-                        <CommandItem
-                          key={country}
-                          value={country}
-                          onSelect={() => {
-                            updateField("country", country);
-                            setCountryOpen(false);
-                          }}
-                          className="py-3 cursor-pointer"
-                        >
-                          {country}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-            {touched.country && errors.country && (
-              <p className="text-sm text-destructive font-sans">{errors.country}</p>
-            )}
-          </div>
+                  <SelectValue placeholder="Select your gender" />
+                </SelectTrigger>
+                <SelectContent className="glass-card border-none">
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                  <SelectItem value="non-binary">Non-binary</SelectItem>
+                  <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                </SelectContent>
+              </Select>
+              {touched.gender && errors.gender && (
+                <p className="text-sm text-destructive font-sans">{errors.gender}</p>
+              )}
+            </div>
 
-          {/* Submit Button */}
-          <div className="pt-4">
-            <Button 
-              type="submit"
-              className="btn-warm w-full py-6 text-lg rounded-xl font-sans"
-              size="lg"
-            >
-              Continue
-            </Button>
-          </div>
-        </form>
+            {/* Age Range */}
+            <div className="space-y-2">
+              <Label htmlFor="ageRange" className="text-foreground font-sans font-medium">
+                Age range
+              </Label>
+              <Select 
+                value={formData.ageRange} 
+                onValueChange={(value) => updateField("ageRange", value)}
+              >
+                <SelectTrigger 
+                  id="ageRange"
+                  className={cn(
+                    "h-14 text-base font-sans input-glass",
+                    touched.ageRange && errors.ageRange && "border-destructive"
+                  )}
+                >
+                  <SelectValue placeholder="Select your age range" />
+                </SelectTrigger>
+                <SelectContent className="glass-card border-none">
+                  <SelectItem value="under-18">Under 18</SelectItem>
+                  <SelectItem value="18-24">18-24</SelectItem>
+                  <SelectItem value="25-34">25-34</SelectItem>
+                  <SelectItem value="35-44">35-44</SelectItem>
+                  <SelectItem value="45-54">45-54</SelectItem>
+                  <SelectItem value="55-64">55-64</SelectItem>
+                  <SelectItem value="65+">65+</SelectItem>
+                </SelectContent>
+              </Select>
+              {touched.ageRange && errors.ageRange && (
+                <p className="text-sm text-destructive font-sans">{errors.ageRange}</p>
+              )}
+            </div>
+
+            {/* Country - Searchable */}
+            <div className="space-y-2">
+              <Label htmlFor="country" className="text-foreground font-sans font-medium">
+                Country of residence
+              </Label>
+              <Popover open={countryOpen} onOpenChange={setCountryOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={countryOpen}
+                    className={cn(
+                      "w-full h-14 justify-between text-base font-sans font-normal input-glass border",
+                      !formData.country && "text-muted-foreground",
+                      touched.country && errors.country && "border-destructive"
+                    )}
+                  >
+                    {formData.country || "Search for your country"}
+                    <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 glass-card border-none" align="start">
+                  <Command className="bg-transparent">
+                    <CommandInput placeholder="Search countries..." className="h-12" />
+                    <CommandList>
+                      <CommandEmpty>No country found.</CommandEmpty>
+                      <CommandGroup className="max-h-64 overflow-auto">
+                        {COUNTRIES.map((country) => (
+                          <CommandItem
+                            key={country}
+                            value={country}
+                            onSelect={() => {
+                              updateField("country", country);
+                              setCountryOpen(false);
+                            }}
+                            className="py-3 cursor-pointer hover:bg-white/30 dark:hover:bg-white/10 rounded-lg mx-1"
+                          >
+                            {country}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+              {touched.country && errors.country && (
+                <p className="text-sm text-destructive font-sans">{errors.country}</p>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <div className="pt-4">
+              <Button 
+                type="submit"
+                className="btn-warm w-full py-6 text-lg font-sans"
+                size="lg"
+              >
+                Continue
+              </Button>
+            </div>
+          </form>
+        </GlassCard>
 
         {/* Privacy note */}
         <p 
