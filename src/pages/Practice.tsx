@@ -268,7 +268,7 @@ const Practice = () => {
               <div className="flex flex-col items-center gap-6">
                 {transcriptionError ? (
                   <>
-                    <p className="text-sm text-destructive font-sans text-center">
+                    <p className="text-sm font-sans text-center status-error rounded-lg px-3 py-2">
                       {transcriptionError}
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">

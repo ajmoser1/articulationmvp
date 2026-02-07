@@ -6,6 +6,7 @@ import {
 } from "@/lib/persistence";
 import { GlassCard } from "@/components/ui/glass-card";
 import { WatercolorBlob } from "@/components/ui/WatercolorBlob";
+import { Sparkles } from "lucide-react";
 
 const ProgressPage = () => {
   const history = useMemo<StoredExerciseResult[]>(() => getExerciseHistory(), []);
@@ -88,10 +89,19 @@ const ProgressPage = () => {
             Exercise history
           </h2>
           {sorted.length === 0 ? (
-            <p className="text-sm text-muted-foreground font-sans">
-              You haven&apos;t completed any exercises yet. Once you finish a practice,
-              your results will appear here.
-            </p>
+            <GlassCard className="p-6 text-center status-success" hover={false}>
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-12 h-12 rounded-full glass-subtle flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-success" />
+                </div>
+                <p className="text-foreground font-serif">
+                  Your progress story starts here.
+                </p>
+                <p className="text-sm text-muted-foreground font-sans">
+                  Complete your first practice and your results will show up with trends and insights.
+                </p>
+              </div>
+            </GlassCard>
           ) : (
             <ul className="space-y-3">
               {sorted.map((entry, index) => {

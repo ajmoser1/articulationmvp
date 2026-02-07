@@ -17,6 +17,23 @@ const queryClient = new QueryClient();
 
 const App = () => {
   useEffect(() => {
+    const root = document.documentElement;
+    const isLowPerf =
+      (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) ||
+      ("deviceMemory" in navigator && (navigator as Navigator & { deviceMemory?: number }).deviceMemory! <= 4) ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (isLowPerf) {
+      root.setAttribute("data-perf", "low");
+    }
+
+    const enableTextures = () => root.classList.add("textures-ready");
+    if (typeof window.requestIdleCallback === "function") {
+      window.requestIdleCallback(() => enableTextures());
+    } else {
+      window.setTimeout(enableTextures, 300);
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
