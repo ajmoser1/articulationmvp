@@ -210,7 +210,7 @@ const Practice = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-24 flex flex-col relative">
+    <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-24 flex flex-col relative page-transition">
       <WatercolorBlob position="center-top" colorScheme="blue-pink" size={650} />
       <WatercolorBlob position="bottom-right" colorScheme="purple-pink" size={450} />
       <div className="mb-8 relative z-10">
@@ -301,7 +301,7 @@ const Practice = () => {
                     <div className="w-full h-1.5 rounded-full bg-white/30 overflow-hidden">
                       <div className="h-full w-1/3 rounded-full bg-primary/60 animate-analyzing" />
                     </div>
-                    <p className="text-muted-foreground font-serif animate-pulse-gentle">
+                    <p className="text-muted-foreground font-serif animate-soft-fade">
                       Analyzing your speech...
                     </p>
                   </>
@@ -312,23 +312,19 @@ const Practice = () => {
             <button
               onClick={handleRecordClick}
               className={cn(
-                "w-32 h-32 rounded-full flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-ring focus:ring-offset-4 focus:ring-offset-background",
-                recordingState === "idle"
-                  ? "bg-primary hover:bg-primary/90 shadow-button hover:shadow-elevated hover:scale-105"
-                  : "bg-destructive animate-pulse-recording"
+                "record-button focus:outline-none focus:ring-4 focus:ring-ring focus:ring-offset-4 focus:ring-offset-background",
+                recordingState === "idle" ? "record-button--idle" : "record-button--recording"
               )}
-              style={{
-                boxShadow: recordingState === "idle" 
-                  ? "0 10px 40px rgba(92, 115, 82, 0.4), inset 0 1px 0 rgba(255,255,255,0.3)"
-                  : undefined
-              }}
               aria-label={recordingState === "idle" ? "Start recording" : "Stop recording"}
             >
-              {recordingState === "idle" ? (
-                <div className="w-12 h-12 rounded-full bg-primary-foreground" />
-              ) : (
-                <div className="w-10 h-10 rounded-sm bg-destructive-foreground" />
+              {recordingState === "recording" && (
+                <span className="record-button-pulse" aria-hidden />
               )}
+              <span className="record-button-content">
+                {recordingState === "recording"
+                  ? formatTime(Math.max(0, 60 - timeRemaining))
+                  : "Record"}
+              </span>
             </button>
           )}
         </div>

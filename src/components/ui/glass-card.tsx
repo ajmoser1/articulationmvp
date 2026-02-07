@@ -4,10 +4,11 @@ import { cn } from "@/lib/utils";
 interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: "default" | "interactive" | "subtle";
   hover?: boolean;
+  animate?: boolean;
 }
 
 const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
-  ({ className, variant = "default", hover = true, children, ...props }, ref) => {
+  ({ className, variant = "default", hover = true, animate = true, children, ...props }, ref) => {
     const variantClasses = {
       default: "glass-card",
       interactive: "glass-card-interactive",
@@ -19,9 +20,11 @@ const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
         ref={ref}
         className={cn(
           variantClasses[variant],
+          animate && "glass-entrance reveal-on-scroll",
           !hover && "hover:transform-none hover:shadow-none",
           className
         )}
+        data-reveal={animate ? "true" : undefined}
         {...props}
       >
         {children}

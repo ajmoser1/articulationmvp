@@ -99,7 +99,7 @@ const TopicSelection = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-24 flex flex-col relative">
+    <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-24 flex flex-col relative page-transition">
       <WatercolorBlob position="center-top" colorScheme="green-purple" size={620} />
       <WatercolorBlob position="top-right" colorScheme="purple-pink" size={450} />
       {/* Header */}

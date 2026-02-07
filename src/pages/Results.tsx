@@ -10,7 +10,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { WatercolorBlob } from "@/components/ui/WatercolorBlob";
 import { saveExerciseResult } from "@/lib/persistence";
 
-const TYPEWRITER_MS_PER_CHAR = 60;
+const TYPEWRITER_MS_PER_CHAR = 40;
 
 type ResultsLocationState = {
   transcript?: string;
@@ -22,14 +22,14 @@ function buildSegments(
   transcript: string,
   visibleLength: number,
   fillerPositions: { word: string; position: number }[]
-): { type: "normal" | "filler"; text: string }[] {
+): { type: "normal" | "filler"; text: string; start: number }[] {
   if (visibleLength <= 0) return [];
   const ranges = fillerPositions
     .map((f) => ({ start: f.position, end: f.position + f.word.length }))
     .filter((r) => r.end > 0 && r.start < visibleLength)
     .sort((a, b) => a.start - b.start);
 
-  const segments: { type: "normal" | "filler"; text: string }[] = [];
+  const segments: { type: "normal" | "filler"; text: string; start: number }[] = [];
   let pos = 0;
   for (const r of ranges) {
     const clipStart = Math.max(r.start, 0);
@@ -38,18 +38,24 @@ function buildSegments(
       segments.push({
         type: "normal",
         text: transcript.slice(pos, clipStart),
+        start: pos,
       });
     }
     if (clipStart < clipEnd) {
       segments.push({
         type: "filler",
         text: transcript.slice(clipStart, clipEnd),
+        start: clipStart,
       });
     }
     pos = clipEnd;
   }
   if (pos < visibleLength) {
-    segments.push({ type: "normal", text: transcript.slice(pos, visibleLength) });
+    segments.push({
+      type: "normal",
+      text: transcript.slice(pos, visibleLength),
+      start: pos,
+    });
   }
   return segments;
 }
@@ -86,6 +92,23 @@ function getDistributionInsight(
   return "You use more fillers toward the end—try wrapping up with a clear conclusion.";
 }
 
+function useCountUp(target: number, durationMs: number) {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    const start = performance.now();
+    const animate = (now: number) => {
+      const progress = Math.min(1, (now - start) / durationMs);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setValue(target * eased);
+      if (progress < 1) requestAnimationFrame(animate);
+    };
+    requestAnimationFrame(animate);
+  }, [target, durationMs]);
+
+  return value;
+}
+
 const Results = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -103,6 +126,7 @@ const Results = () => {
   const [visibleLength, setVisibleLength] = useState(0);
   const [flashKey, setFlashKey] = useState(0);
   const [typewriterDone, setTypewriterDone] = useState(false);
+  const [glowPositions, setGlowPositions] = useState<Set<number>>(new Set());
 
   const fillerStarts = useMemo(
     () =>
@@ -116,19 +140,37 @@ const Results = () => {
     setTypewriterDone(false);
     let index = 0;
     const len = transcript.length;
-    const interval = setInterval(() => {
+    let timeoutId: number | undefined;
+    const tick = () => {
       index += 1;
       if (index > len) {
-        clearInterval(interval);
         setTypewriterDone(true);
         return;
       }
       setVisibleLength(index);
       if (fillerStarts.has(index - 1)) {
         setFlashKey((k) => k + 1);
+        setGlowPositions((prev) => {
+          const next = new Set(prev);
+          next.add(index - 1);
+          return next;
+        });
+        window.setTimeout(() => {
+          setGlowPositions((prev) => {
+            const next = new Set(prev);
+            next.delete(index - 1);
+            return next;
+          });
+        }, 400);
       }
-    }, TYPEWRITER_MS_PER_CHAR);
-    return () => clearInterval(interval);
+      const jitter = Math.floor(Math.random() * 11) - 5; // -5..5
+      const nextDelay = Math.max(35, Math.min(45, TYPEWRITER_MS_PER_CHAR + jitter));
+      timeoutId = window.setTimeout(tick, nextDelay);
+    };
+    timeoutId = window.setTimeout(tick, TYPEWRITER_MS_PER_CHAR);
+    return () => {
+      if (timeoutId) window.clearTimeout(timeoutId);
+    };
   }, [transcript, fillerStarts]);
 
   useEffect(() => {
@@ -186,6 +228,9 @@ const Results = () => {
   const { totalFillerWords, fillersPerMinute, categoryCounts, distributionAnalysis } =
     analysisResults;
 
+  const totalCount = useCountUp(totalFillerWords, 800);
+  const fpmCount = useCountUp(fillersPerMinute, 800);
+
   return (
     <div className="min-h-screen bg-gradient-layered flex flex-col pb-24 relative">
       {/* Flash overlay */}
@@ -194,7 +239,7 @@ const Results = () => {
       <WatercolorBlob position="center-top" colorScheme="celebration" size={700} />
       <WatercolorBlob position="bottom-left" colorScheme="purple-pink" size={500} />
 
-      <div className="flex-1 px-6 py-10 max-w-3xl mx-auto w-full flex flex-col gap-8 relative z-10">
+      <div className="flex-1 px-6 py-10 max-w-3xl mx-auto w-full flex flex-col gap-8 relative z-10 page-transition">
         {/* Top metrics */}
         <section className="flex flex-wrap gap-4">
           <GlassCard className="flex-1 min-w-[140px] p-6" hover={false}>
@@ -202,7 +247,7 @@ const Results = () => {
               Total filler words
             </p>
             <p className="text-4xl font-serif font-bold text-foreground tabular-nums">
-              {totalFillerWords}
+              {Math.round(totalCount)}
             </p>
           </GlassCard>
           <GlassCard className="flex-1 min-w-[140px] p-6" hover={false}>
@@ -210,7 +255,7 @@ const Results = () => {
               Fillers per minute
             </p>
             <p className="text-4xl font-serif font-bold text-foreground tabular-nums">
-              {fillersPerMinute.toFixed(1)}
+              {fpmCount.toFixed(1)}
             </p>
           </GlassCard>
         </section>
@@ -220,12 +265,18 @@ const Results = () => {
           <p className="text-sm uppercase tracking-wide text-muted-foreground font-sans mb-3">
             Your transcript
           </p>
-          <div className="font-serif text-foreground leading-relaxed whitespace-pre-wrap min-h-[8rem]">
+          <div
+            className={`font-serif text-foreground leading-relaxed whitespace-pre-wrap min-h-[8rem] transition-opacity duration-300 ${
+              typewriterDone ? "opacity-90" : "opacity-100"
+            }`}
+          >
             {segments.map((seg, i) =>
               seg.type === "filler" ? (
                 <span
                   key={i}
-                  className="rounded px-0.5 bg-destructive/15 text-destructive results-filler-glow"
+                  className={`rounded px-0.5 bg-destructive/15 text-destructive results-filler-glow ${
+                    glowPositions.has(seg.start) ? "results-filler-glow-animate" : ""
+                  }`}
                 >
                   {seg.text}
                 </span>
@@ -234,7 +285,7 @@ const Results = () => {
               )
             )}
             {!typewriterDone && (
-              <span className="inline-block w-2 h-4 bg-foreground/60 animate-pulse-gentle ml-0.5 align-baseline" />
+              <span className="inline-block w-2 h-4 bg-foreground/60 typewriter-caret ml-0.5 align-baseline" />
             )}
           </div>
         </GlassCard>

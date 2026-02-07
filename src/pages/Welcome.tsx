@@ -18,7 +18,7 @@ const Welcome = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-layered px-6 py-12 pb-24 flex flex-col relative">
+    <div className="min-h-screen bg-gradient-layered px-6 py-12 pb-24 flex flex-col relative page-transition">
       <WatercolorBlob position="top-right" colorScheme="purple-pink" size={600} />
       <WatercolorBlob position="bottom-left" colorScheme="blue-cyan" size={500} />
       <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full relative z-10">

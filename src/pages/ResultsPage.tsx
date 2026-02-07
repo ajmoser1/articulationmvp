@@ -35,7 +35,7 @@ const ProgressPage = () => {
       : "You're maintaining steady performance.";
 
   return (
-    <div className="min-h-screen bg-gradient-layered px-6 py-10 pb-24 flex flex-col items-center relative">
+    <div className="min-h-screen bg-gradient-layered px-6 py-10 pb-24 flex flex-col items-center relative page-transition">
       <WatercolorBlob position="top-left" colorScheme="rainbow" size={550} />
       <WatercolorBlob position="bottom-right" colorScheme="blue-cyan" size={500} />
       <WatercolorBlob position="center" colorScheme="green-purple" size={400} />

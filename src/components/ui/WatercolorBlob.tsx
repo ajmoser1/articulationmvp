@@ -73,17 +73,19 @@ export function WatercolorBlob({
       )}
       style={{ width: size, height: size, zIndex: 0 }}
     >
-      <div
-        className={cn(
-          "watercolor-blob-inner w-full h-full rounded-[60%_40%_30%_70%_/_60%_30%_70%_40%]",
-          animate && "animate-watercolor-float"
-        )}
-        style={{
-          background: COLOR_SCHEMES[colorScheme],
-          mixBlendMode: "screen",
-          willChange: animate ? "transform" : undefined,
-        }}
-      />
+      <div className="watercolor-parallax w-full h-full">
+        <div
+          className={cn(
+            "watercolor-blob-inner w-full h-full rounded-[60%_40%_30%_70%_/_60%_30%_70%_40%]",
+            animate && "animate-watercolor-float"
+          )}
+          style={{
+            background: COLOR_SCHEMES[colorScheme],
+            mixBlendMode: "screen",
+            willChange: animate ? "transform" : undefined,
+          }}
+        />
+      </div>
     </div>
   );
 }

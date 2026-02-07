@@ -37,9 +37,29 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, onClick, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+    return (
+      <Comp
+        className={cn("btn-ripple", buttonVariants({ variant, size, className }))}
+        ref={ref}
+        onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+          const target = event.currentTarget;
+          const rect = target.getBoundingClientRect();
+          const x = event.clientX - rect.left;
+          const y = event.clientY - rect.top;
+          target.style.setProperty("--ripple-x", `${x}px`);
+          target.style.setProperty("--ripple-y", `${y}px`);
+          target.classList.remove("ripple-active");
+          // Force reflow to restart animation
+          void target.offsetWidth;
+          target.classList.add("ripple-active");
+          window.setTimeout(() => target.classList.remove("ripple-active"), 300);
+          onClick?.(event);
+        }}
+        {...props}
+      />
+    );
   },
 );
 Button.displayName = "Button";
