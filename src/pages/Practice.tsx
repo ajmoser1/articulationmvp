@@ -7,6 +7,7 @@ import { transcribeAudio } from "@/services/transcription";
 import { analyzeFillerWords } from "@/lib/fillerWords";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
+import { WatercolorBlob } from "@/components/ui/WatercolorBlob";
 
 type RecordingState = "idle" | "recording" | "processing";
 
@@ -209,9 +210,9 @@ const Practice = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-24 flex flex-col">
-      {/* Header */}
-      <div className="mb-8">
+    <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-24 flex flex-col relative">
+      <WatercolorBlob position="center-top" color="amber" size={540} />
+      <div className="mb-8 relative z-10">
         <button
           onClick={() => navigate("/topics")}
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors font-sans text-sm"
@@ -222,7 +223,7 @@ const Practice = () => {
         </button>
       </div>
 
-      <div className="flex-1 max-w-md mx-auto w-full flex flex-col items-center">
+      <div className="flex-1 max-w-md mx-auto w-full flex flex-col items-center relative z-10">
         {/* Topic Display in Glass Card */}
         <GlassCard
           className="w-full mb-12 p-6 text-center opacity-0 animate-fade-in"

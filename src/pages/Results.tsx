@@ -7,6 +7,7 @@ import {
 } from "@/lib/fillerWords";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
+import { WatercolorBlob } from "@/components/ui/WatercolorBlob";
 import { saveExerciseResult } from "@/lib/persistence";
 
 const TYPEWRITER_MS_PER_CHAR = 60;
@@ -186,11 +187,13 @@ const Results = () => {
     analysisResults;
 
   return (
-    <div className="min-h-screen bg-gradient-layered flex flex-col pb-24">
+    <div className="min-h-screen bg-gradient-layered flex flex-col pb-24 relative">
       {/* Flash overlay */}
       {flashKey > 0 && <div key={flashKey} className="results-flash-overlay" />}
 
-      <div className="flex-1 px-6 py-10 max-w-3xl mx-auto w-full flex flex-col gap-8">
+      <WatercolorBlob position="center-top" color="burgundy" size={520} />
+
+      <div className="flex-1 px-6 py-10 max-w-3xl mx-auto w-full flex flex-col gap-8 relative z-10">
         {/* Top metrics */}
         <section className="flex flex-wrap gap-4">
           <GlassCard className="flex-1 min-w-[140px] p-6" hover={false}>
@@ -221,7 +224,7 @@ const Results = () => {
               seg.type === "filler" ? (
                 <span
                   key={i}
-                  className="rounded px-0.5 bg-destructive/15 text-destructive"
+                  className="rounded px-0.5 bg-destructive/15 text-destructive results-filler-glow"
                 >
                   {seg.text}
                 </span>

@@ -149,6 +149,18 @@
   body {
     @apply bg-background text-foreground antialiased;
     line-height: 1.75;
+    position: relative;
+  }
+
+  /* Subtle paper grain / noise texture - barely perceptible, behind all content */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   }
 
   /* Typography - Crimson Pro for headings, never pure black */
@@ -450,24 +462,36 @@
   animation: analyzing 2s ease-in-out infinite;
 }
 
-/* Results page: red flash when filler word is revealed during typewriter */
-@keyframes filler-flash {
+/* Results page: warm burgundy watercolor wash when filler word is revealed */
+@keyframes filler-flash-watercolor {
   0% {
     opacity: 0;
+    transform: scale(0.5);
   }
-  30% {
-    opacity: 1;
+  40% {
+    opacity: 0.18;
+    transform: scale(1.2);
   }
   100% {
     opacity: 0;
+    transform: scale(1.5);
   }
 }
 
 .results-flash-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(255, 0, 0, 0.15);
+  background: radial-gradient(
+    circle at center,
+    rgba(160, 56, 78, 0.18) 0%,
+    transparent 70%
+  );
   pointer-events: none;
   z-index: 50;
-  animation: filler-flash 200ms ease-out forwards;
+  animation: filler-flash-watercolor 250ms ease-out forwards;
+  will-change: transform, opacity;
+}
+
+.results-filler-glow {
+  text-shadow: 0 0 20px rgba(160, 56, 78, 0.4);
 }

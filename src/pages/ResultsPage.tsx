@@ -5,6 +5,7 @@ import {
   type StoredExerciseResult,
 } from "@/lib/persistence";
 import { GlassCard } from "@/components/ui/glass-card";
+import { WatercolorBlob } from "@/components/ui/WatercolorBlob";
 
 const ProgressPage = () => {
   const history = useMemo<StoredExerciseResult[]>(() => getExerciseHistory(), []);
@@ -34,8 +35,10 @@ const ProgressPage = () => {
       : "You're maintaining steady performance.";
 
   return (
-    <div className="min-h-screen bg-gradient-layered px-6 py-10 pb-24 flex flex-col items-center">
-      <div className="w-full max-w-3xl space-y-8">
+    <div className="min-h-screen bg-gradient-layered px-6 py-10 pb-24 flex flex-col items-center relative">
+      <WatercolorBlob position="top-left" color="terracotta" size={420} />
+      <WatercolorBlob position="bottom-right" color="amber" size={480} />
+      <div className="w-full max-w-3xl space-y-8 relative z-10">
         <header>
           <h1 className="text-2xl font-serif font-semibold text-foreground mb-2">
             Your progress

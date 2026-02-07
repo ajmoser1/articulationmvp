@@ -15,6 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import { saveDemographics } from "@/lib/persistence";
 import { GlassCard } from "@/components/ui/glass-card";
+import { WatercolorBlob } from "@/components/ui/WatercolorBlob";
 
 const COUNTRIES = [
   "United States", "United Kingdom", "Canada", "Australia", "Germany",
@@ -86,9 +87,9 @@ const Questionnaire = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-24 flex flex-col">
-      {/* Header */}
-      <div className="mb-8">
+    <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-24 flex flex-col relative">
+      <WatercolorBlob position="bottom-right" color="terracotta" />
+      <div className="mb-8 relative z-10">
         <button 
           onClick={() => navigate("/")}
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors font-sans text-sm"
@@ -98,7 +99,7 @@ const Questionnaire = () => {
         </button>
       </div>
 
-      <div className="flex-1 max-w-md mx-auto w-full">
+      <div className="flex-1 max-w-md mx-auto w-full relative z-10">
         {/* Title */}
         <div className="mb-8 opacity-0 animate-fade-in" style={{ animationDelay: "0.1s" }}>
           <h1 className="text-3xl font-serif font-bold text-foreground mb-2">

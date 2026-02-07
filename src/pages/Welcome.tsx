@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
+import { WatercolorBlob } from "@/components/ui/WatercolorBlob";
 import { MessageCircle, Sparkles, Target } from "lucide-react";
 import { getDemographics } from "@/lib/persistence";
 
@@ -17,9 +18,9 @@ const Welcome = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-layered px-6 py-12 pb-24 flex flex-col">
-      {/* Header */}
-      <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full">
+    <div className="min-h-screen bg-gradient-layered px-6 py-12 pb-24 flex flex-col relative">
+      <WatercolorBlob position="bottom-right" color="terracotta" />
+      <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full relative z-10">
         {/* Icon */}
         <div className="mb-8 opacity-0 animate-fade-in" style={{ animationDelay: "0.1s" }}>
           <div className="w-16 h-16 rounded-2xl glass-subtle flex items-center justify-center">
