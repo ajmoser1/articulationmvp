@@ -319,7 +319,7 @@ const Practice = () => {
               )}
               style={{
                 boxShadow: recordingState === "idle" 
-                  ? "0 10px 40px rgba(198, 123, 92, 0.35), inset 0 1px 0 rgba(255,255,255,0.3)"
+                  ? "0 10px 40px rgba(201, 162, 39, 0.4), inset 0 1px 0 rgba(255,255,255,0.3)"
                   : undefined
               }}
               aria-label={recordingState === "idle" ? "Start recording" : "Stop recording"}
