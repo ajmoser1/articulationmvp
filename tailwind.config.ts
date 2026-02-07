@@ -75,17 +75,17 @@ export default {
           DEFAULT: "hsl(var(--deep))",
           foreground: "hsl(var(--deep-foreground))",
         },
-        /* Legacy warm colors - honey gold theme */
+        /* Legacy warm colors - warm sage theme */
         warm: {
           cream: "hsl(40 33% 97%)",
           "cream-dark": "hsl(30 30% 93%)",
           charcoal: "hsl(0 0% 24%)",
           "brown-gray": "hsl(25 15% 38%)",
-          honey: "hsl(45 70% 52%)",
-          "honey-dark": "hsl(45 50% 38%)",
+          sage: "hsl(95 18% 42%)",
+          "sage-dark": "hsl(95 18% 32%)",
           forest: "hsl(110 24% 34%)",
           burgundy: "hsl(350 48% 42%)",
-          bronze: "hsl(45 65% 42%)",
+          bronze: "hsl(95 16% 38%)",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

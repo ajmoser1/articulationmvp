@@ -20,8 +20,8 @@
     --popover: 30 30% 93%;
     --popover-foreground: 0 0% 24%;
 
-    /* Primary accent - warm honey gold (no orange/red) */
-    --primary: 45 70% 52%; /* #C9A227 honey gold */
+    /* Primary accent - warm sage green (earthy, not yellow) */
+    --primary: 95 18% 42%; /* #5C7352 warm sage */
     --primary-foreground: 40 33% 97%;
 
     /* Secondary - warm muted */
@@ -32,8 +32,8 @@
     --muted: 30 20% 90%;
     --muted-foreground: 25 15% 38%; /* #6B5D52 */
 
-    /* Accent - bronze/goldenrod highlight */
-    --accent: 45 65% 42%; /* #A68B2E warm gold */
+    /* Accent - deeper sage */
+    --accent: 95 16% 38%; /* #4A6344 */
     --accent-foreground: 40 33% 97%;
 
     /* Destructive - burgundy wine */
@@ -44,13 +44,13 @@
     --success: 110 24% 34%; /* #4A6741 */
     --success-foreground: 40 33% 97%;
 
-    /* Deep accent - dark honey gold */
-    --deep: 45 50% 38%; /* #8B7314 dark gold */
+    /* Deep accent - dark sage */
+    --deep: 95 18% 32%; /* #3D4A38 */
     --deep-foreground: 40 33% 97%;
 
     --border: 30 20% 85%;
     --input: 30 20% 88%;
-    --ring: 45 70% 52%;
+    --ring: 95 18% 42%;
 
     /* Radius system - generous, never sharp */
     --radius: 1rem;
@@ -63,24 +63,24 @@
     --font-serif: 'Crimson Pro', Georgia, 'Times New Roman', serif;
     --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     
-    /* Gradients - honey gold */
-    --gradient-warm: linear-gradient(135deg, hsl(45 70% 52%) 0%, hsl(45 50% 38%) 100%);
+    /* Gradients - warm sage */
+    --gradient-warm: linear-gradient(135deg, hsl(95 18% 45%) 0%, hsl(95 18% 32%) 100%);
     --gradient-subtle: linear-gradient(180deg, hsl(30 30% 93%) 0%, hsl(40 33% 97%) 100%);
     
     /* Shadows - soft and luxurious */
     --shadow-soft: 0 4px 24px -6px hsl(25 40% 20% / 0.12);
-    --shadow-button: 0 2px 12px -3px hsl(45 70% 45% / 0.4);
+    --shadow-button: 0 2px 12px -3px hsl(95 18% 35% / 0.35);
     --shadow-card: 0 8px 32px -8px hsl(25 40% 20% / 0.1);
     --shadow-elevated: 0 12px 40px -12px hsl(25 40% 20% / 0.15);
 
     --sidebar-background: 40 33% 97%;
     --sidebar-foreground: 0 0% 24%;
-    --sidebar-primary: 45 70% 52%;
+    --sidebar-primary: 95 18% 42%;
     --sidebar-primary-foreground: 40 33% 97%;
     --sidebar-accent: 30 30% 93%;
     --sidebar-accent-foreground: 0 0% 24%;
     --sidebar-border: 30 20% 85%;
-    --sidebar-ring: 45 70% 52%;
+    --sidebar-ring: 95 18% 42%;
 
     /* Futuristic watercolor accents - decorative only */
     --watercolor-electric-blue: 76 201 240;
@@ -96,8 +96,8 @@
     --bg-tertiary: #FFFFFF;
     --text-primary: #3E3E3E;
     --text-secondary: #6B5D52;
-    --accent-primary: #C9A227;
-    --accent-deep: #8B7314;
+    --accent-primary: #5C7352;
+    --accent-deep: #3D4A38;
     --accent-success: #4A6741;
     --accent-warning: #A0384E;
     --accent-metallic: #B8860B;
@@ -114,7 +114,7 @@
     --popover: 20 20% 19%;
     --popover-foreground: 30 30% 93%;
 
-    --primary: 45 65% 55%; /* honey gold - readable on dark */
+    --primary: 95 22% 55%; /* warm sage - readable on dark */
     --primary-foreground: 20 25% 13%;
 
     --secondary: 20 18% 24%;
@@ -123,7 +123,7 @@
     --muted: 20 18% 24%;
     --muted-foreground: 30 20% 76%;
 
-    --accent: 45 60% 42%; /* warm gold */
+    --accent: 95 18% 40%; /* sage */
     --accent-foreground: 30 30% 93%;
 
     --destructive: 350 40% 40%;
@@ -132,26 +132,26 @@
     --success: 110 20% 32%;
     --success-foreground: 30 30% 93%;
 
-    --deep: 45 45% 42%; /* dark honey gold */
+    --deep: 95 18% 35%; /* dark sage */
     --deep-foreground: 30 30% 93%;
 
     --border: 20 15% 28%;
     --input: 20 15% 28%;
-    --ring: 45 65% 52%;
+    --ring: 95 22% 55%;
 
     --shadow-soft: 0 4px 24px -6px hsl(0 0% 0% / 0.3);
-    --shadow-button: 0 2px 12px -3px hsl(45 60% 35% / 0.45);
+    --shadow-button: 0 2px 12px -3px hsl(95 18% 30% / 0.4);
     --shadow-card: 0 8px 32px -8px hsl(0 0% 0% / 0.25);
     --shadow-elevated: 0 12px 40px -12px hsl(0 0% 0% / 0.35);
 
     --sidebar-background: 20 25% 13%;
     --sidebar-foreground: 30 30% 93%;
-    --sidebar-primary: 45 65% 55%;
+    --sidebar-primary: 95 22% 55%;
     --sidebar-primary-foreground: 20 25% 13%;
     --sidebar-accent: 20 18% 24%;
     --sidebar-accent-foreground: 30 30% 93%;
     --sidebar-border: 20 15% 28%;
-    --sidebar-ring: 45 65% 52%;
+    --sidebar-ring: 95 22% 55%;
 
     /* Hex semantic colors - dark mode leather-inspired */
     --bg-primary: #2A1F1A;
@@ -159,8 +159,8 @@
     --bg-tertiary: #4A3B32;
     --text-primary: #F5EDE4;
     --text-secondary: #C4B5A8;
-    --accent-primary: #D4A84B;
-    --accent-deep: #A68B2E;
+    --accent-primary: #6B8B5C;
+    --accent-deep: #5A7B4A;
     --accent-success: #4A6741;
     --accent-warning: #C45468;
     --accent-metallic: #DAA520;
@@ -256,8 +256,8 @@
     border-top: 1px solid rgba(255, 255, 255, 0.85);
     border-radius: 2rem;
     box-shadow: 
-      0 12px 48px rgba(201, 162, 39, 0.18),
-      0 4px 16px rgba(201, 162, 39, 0.1),
+      0 12px 48px rgba(92, 115, 82, 0.2),
+      0 4px 16px rgba(92, 115, 82, 0.12),
       inset 0 1px 0 rgba(255, 255, 255, 0.8),
       inset 0 0 0 1px rgba(76, 201, 240, 0.1),
       inset 0 0 0 2px rgba(247, 37, 133, 0.06);
@@ -267,8 +267,8 @@
   .glass-card:hover {
     transform: translateY(-2px);
     box-shadow: 
-      0 18px 56px rgba(201, 162, 39, 0.22),
-      0 6px 20px rgba(201, 162, 39, 0.12),
+      0 18px 56px rgba(92, 115, 82, 0.25),
+      0 6px 20px rgba(92, 115, 82, 0.15),
       inset 0 1px 0 rgba(255, 255, 255, 0.9);
   }
 
@@ -328,7 +328,7 @@
     border-top: 1px solid rgba(255, 255, 255, 0.7);
     border-radius: 1.5rem;
     box-shadow: 
-      0 6px 24px rgba(201, 162, 39, 0.12),
+      0 6px 24px rgba(92, 115, 82, 0.14),
       inset 0 1px 0 rgba(255, 255, 255, 0.6);
   }
 
@@ -386,7 +386,7 @@
 
   .btn-warm:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 24px -4px hsl(45 70% 45% / 0.5);
+    box-shadow: 0 6px 24px -4px hsl(95 18% 38% / 0.45);
   }
 
   .btn-warm:active {
@@ -403,7 +403,7 @@
     border-top: 1px solid rgba(255, 255, 255, 0.8);
     border-radius: 1.25rem;
     box-shadow: 
-      0 6px 20px rgba(201, 162, 39, 0.14),
+      0 6px 20px rgba(92, 115, 82, 0.16),
       inset 0 1px 0 rgba(255, 255, 255, 0.6),
       inset 0 0 0 1px rgba(76, 201, 240, 0.1);
     @apply font-medium transition-all duration-300 ease-out;
@@ -412,7 +412,7 @@
   .btn-glass:hover {
     background: rgba(255, 255, 255, 0.85);
     transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(201, 162, 39, 0.18);
+    box-shadow: 0 8px 24px rgba(92, 115, 82, 0.2);
   }
 
   [data-theme="dark"] .btn-glass {
