@@ -16,7 +16,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import { saveDemographics } from "@/lib/persistence";
 import { GlassCard } from "@/components/ui/glass-card";
-import { WatercolorBlob } from "@/components/ui/WatercolorBlob";
+import { FuturismBlock } from "@/components/ui/FuturismBlock";
 
 const COUNTRIES = [
   "United States", "United Kingdom", "Canada", "Australia", "Germany",
@@ -93,8 +93,23 @@ const Questionnaire = () => {
 
   return (
     <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-24 flex flex-col relative page-transition">
-      <WatercolorBlob position="top-right" colorScheme="purple-pink" size={600} />
-      <WatercolorBlob position="bottom-left" colorScheme="blue-cyan" size={500} />
+      <FuturismBlock
+        variant="block-2"
+        className="top-[-240px] right-[-220px] futurism-strong"
+        borderColor="#F72585"
+        zIndex={1}
+      />
+      <FuturismBlock
+        variant="triangle-2"
+        className="bottom-[-160px] left-[-140px]"
+        borderColor="#4CC9F0"
+        zIndex={2}
+      />
+      <FuturismBlock
+        variant="stripe-2"
+        className="top-14 right-[-260px]"
+        zIndex={1}
+      />
       <div className="mb-8 relative z-10">
         <button 
           onClick={() => navigate("/")}

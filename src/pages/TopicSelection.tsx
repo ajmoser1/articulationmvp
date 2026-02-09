@@ -4,7 +4,7 @@ import { ArrowLeft, Loader2, MessageCircle, RefreshCw, Settings } from "lucide-r
 import { useToast } from "@/hooks/use-toast";
 import { getDemographics, getExerciseHistory, type UserDemographics } from "@/lib/persistence";
 import { GlassCard } from "@/components/ui/glass-card";
-import { WatercolorBlob } from "@/components/ui/WatercolorBlob";
+import { FuturismBlock } from "@/components/ui/FuturismBlock";
 
 const FALLBACK_TOPICS = [
   "Describe your morning routine",
@@ -102,8 +102,23 @@ const TopicSelection = () => {
 
   return (
     <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-24 flex flex-col relative page-transition">
-      <WatercolorBlob position="center-top" colorScheme="green-purple" size={620} />
-      <WatercolorBlob position="top-right" colorScheme="purple-pink" size={450} />
+      <FuturismBlock
+        variant="block-3"
+        className="top-[-180px] right-[-260px]"
+        borderColor="#7209B7"
+        zIndex={1}
+      />
+      <FuturismBlock
+        variant="block-4"
+        className="top-[-60px] left-[-200px]"
+        borderColor="#4ADE80"
+        zIndex={2}
+      />
+      <FuturismBlock
+        variant="stripe-3"
+        className="top-24 right-[-260px]"
+        zIndex={1}
+      />
       {/* Header */}
       <div className="mb-8 flex items-center justify-between relative z-10">
         <button

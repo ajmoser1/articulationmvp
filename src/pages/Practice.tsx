@@ -7,7 +7,7 @@ import { transcribeAudio } from "@/services/transcription";
 import { analyzeFillerWords } from "@/lib/fillerWords";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
-import { WatercolorBlob } from "@/components/ui/WatercolorBlob";
+import { FuturismBlock } from "@/components/ui/FuturismBlock";
 
 type RecordingState = "idle" | "recording" | "processing";
 
@@ -211,8 +211,28 @@ const Practice = () => {
 
   return (
     <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-24 flex flex-col relative page-transition">
-      <WatercolorBlob position="center-top" colorScheme="blue-pink" size={650} />
-      <WatercolorBlob position="bottom-right" colorScheme="purple-pink" size={450} />
+      <FuturismBlock
+        variant="block-1"
+        className="top-[-220px] right-[-260px] futurism-strong"
+        borderColor="#4CC9F0"
+        zIndex={1}
+      />
+      <FuturismBlock
+        variant="block-2"
+        className="bottom-[-260px] left-[-220px]"
+        borderColor="#F72585"
+        zIndex={2}
+      />
+      <FuturismBlock
+        variant="stripe-1"
+        className="top-24 right-[-240px]"
+        zIndex={1}
+      />
+      <FuturismBlock
+        variant="stripe-2"
+        className="top-56 left-[-240px]"
+        zIndex={1}
+      />
       <div className="mb-8 relative z-10">
         <button
           onClick={() => navigate("/topics")}

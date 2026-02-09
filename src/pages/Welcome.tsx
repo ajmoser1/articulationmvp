@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
-import { WatercolorBlob } from "@/components/ui/WatercolorBlob";
+import { FuturismBlock } from "@/components/ui/FuturismBlock";
 import { MessageCircle, Sparkles, Target } from "lucide-react";
 import { getDemographics } from "@/lib/persistence";
 
@@ -19,8 +19,23 @@ const Welcome = () => {
 
   return (
     <div className="min-h-screen bg-gradient-layered px-6 py-12 pb-24 flex flex-col relative page-transition">
-      <WatercolorBlob position="top-right" colorScheme="purple-pink" size={600} />
-      <WatercolorBlob position="bottom-left" colorScheme="blue-cyan" size={500} />
+      <FuturismBlock
+        variant="block-1"
+        className="top-[-220px] right-[-260px] futurism-strong"
+        borderColor="#7209B7"
+        zIndex={1}
+      />
+      <FuturismBlock
+        variant="triangle-1"
+        className="bottom-[-180px] left-[-160px]"
+        borderColor="#F72585"
+        zIndex={2}
+      />
+      <FuturismBlock
+        variant="stripe-1"
+        className="top-10 right-[-220px]"
+        zIndex={1}
+      />
       <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full relative z-10">
         {/* Icon */}
         <div className="mb-8 opacity-0 animate-fade-in" style={{ animationDelay: "0.1s" }}>

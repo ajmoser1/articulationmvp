@@ -8,7 +8,7 @@ import {
 } from "@/lib/fillerWords";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
-import { WatercolorBlob } from "@/components/ui/WatercolorBlob";
+import { FuturismBlock } from "@/components/ui/FuturismBlock";
 import { FillerCategoryCard } from "@/components/FillerCategoryCard";
 import { saveExerciseResult } from "@/lib/persistence";
 import { FILLER_CATEGORIES } from "@/lib/fillerWords";
@@ -331,8 +331,34 @@ const Results = () => {
       {/* Flash overlay */}
       {flashKey > 0 && <div key={flashKey} className="results-flash-overlay" />}
 
-      <WatercolorBlob position="center-top" colorScheme="celebration" size={700} />
-      <WatercolorBlob position="bottom-left" colorScheme="purple-pink" size={500} />
+      <FuturismBlock
+        variant="block-1"
+        className="top-[-220px] right-[-260px] futurism-intense"
+        borderColor="#F72585"
+        zIndex={1}
+      />
+      <FuturismBlock
+        variant="block-3"
+        className="top-[-80px] left-[-280px] futurism-intense"
+        borderColor="#4CC9F0"
+        zIndex={2}
+      />
+      <FuturismBlock
+        variant="triangle-2"
+        className="bottom-[-200px] left-[-160px] futurism-intense"
+        borderColor="#4ADE80"
+        zIndex={2}
+      />
+      <FuturismBlock
+        variant="stripe-1"
+        className="top-14 right-[-260px]"
+        zIndex={1}
+      />
+      <FuturismBlock
+        variant="stripe-2"
+        className="top-44 left-[-260px]"
+        zIndex={1}
+      />
 
       <div className="flex-1 px-6 py-10 max-w-3xl mx-auto w-full flex flex-col gap-20 md:gap-28 relative z-10">
         {/* Section 1 - Hero metrics + transcript */}

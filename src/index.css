@@ -993,6 +993,95 @@
   will-change: transform;
 }
 
+/* Futurism geometric blocks */
+.futurism-block {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.22;
+  border: 2px solid transparent;
+  animation: futurism-drift 10s ease-in-out infinite;
+  will-change: transform;
+}
+
+.futurism-strong { opacity: 0.28; }
+.futurism-intense { opacity: 0.34; }
+
+
+.futurism-block-1 {
+  width: 640px;
+  height: 900px;
+  background: linear-gradient(135deg, rgba(76, 201, 240, 0.25) 0%, rgba(114, 9, 183, 0.2) 100%);
+  transform: rotate(-15deg) skewY(-8deg);
+  clip-path: polygon(0 0, 100% 10%, 95% 100%, 5% 90%);
+}
+
+.futurism-block-2 {
+  width: 520px;
+  height: 820px;
+  background: linear-gradient(45deg, rgba(247, 37, 133, 0.22) 0%, rgba(6, 255, 165, 0.18) 100%);
+  transform: rotate(25deg);
+  clip-path: polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%);
+}
+
+.futurism-block-3 {
+  width: 760px;
+  height: 520px;
+  background: linear-gradient(135deg, rgba(114, 9, 183, 0.24) 0%, rgba(247, 37, 133, 0.2) 100%);
+  transform: rotate(-8deg) skewX(-6deg);
+  clip-path: polygon(5% 0%, 100% 5%, 95% 95%, 0% 100%);
+}
+
+.futurism-block-4 {
+  width: 520px;
+  height: 520px;
+  background: linear-gradient(135deg, rgba(76, 201, 240, 0.24) 0%, rgba(74, 222, 128, 0.2) 100%);
+  transform: rotate(10deg);
+  clip-path: polygon(0 10%, 100% 0, 90% 100%, 10% 90%);
+}
+
+.futurism-triangle-1 {
+  width: 540px;
+  height: 540px;
+  background: linear-gradient(135deg, rgba(247, 37, 133, 0.24) 0%, rgba(114, 9, 183, 0.2) 100%);
+  transform: rotate(18deg);
+  clip-path: polygon(0 100%, 100% 100%, 30% 0);
+}
+
+.futurism-triangle-2 {
+  width: 420px;
+  height: 420px;
+  background: linear-gradient(135deg, rgba(76, 201, 240, 0.26) 0%, rgba(6, 255, 165, 0.2) 100%);
+  transform: rotate(-22deg);
+  clip-path: polygon(0 0, 100% 30%, 0 100%);
+}
+
+.futurism-stripe-1,
+.futurism-stripe-2,
+.futurism-stripe-3 {
+  width: 900px;
+  height: 4px;
+  background: rgba(76, 201, 240, 0.15);
+  transform: rotate(35deg);
+  opacity: 0.6;
+}
+
+.futurism-stripe-2 {
+  height: 3px;
+  background: rgba(247, 37, 133, 0.15);
+  transform: rotate(45deg);
+}
+
+.futurism-stripe-3 {
+  height: 2px;
+  background: rgba(6, 255, 165, 0.18);
+  transform: rotate(60deg);
+}
+
+@keyframes futurism-drift {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(2deg); }
+}
+
 [data-perf="low"] .watercolor-parallax {
   transform: none !important;
 }
@@ -1002,6 +1091,10 @@
 [data-perf="low"] .glass-entrance {
   animation: none !important;
   transition: none !important;
+}
+
+[data-perf="low"] .futurism-block {
+  animation: none !important;
 }
 
 @keyframes record-idle-pulse {
