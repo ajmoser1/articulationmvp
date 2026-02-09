@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -33,6 +34,8 @@ interface FormData {
   gender: string;
   ageRange: string;
   country: string;
+  currentRole: string;
+  hobbies: string;
 }
 
 interface FormErrors {
@@ -48,6 +51,8 @@ const Questionnaire = () => {
     gender: "",
     ageRange: "",
     country: "",
+    currentRole: "",
+    hobbies: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
@@ -70,7 +75,7 @@ const Questionnaire = () => {
   };
 
   const handleSubmit = () => {
-    setTouched({ gender: true, ageRange: true, country: true });
+    setTouched({ gender: true, ageRange: true, country: true, currentRole: true, hobbies: true });
     
     if (validateForm()) {
       saveDemographics(formData);
@@ -231,6 +236,34 @@ const Questionnaire = () => {
               {touched.country && errors.country && (
                 <p className="text-sm text-destructive font-sans">{errors.country}</p>
               )}
+            </div>
+
+            {/* Current Role */}
+            <div className="space-y-2">
+              <Label htmlFor="currentRole" className="text-foreground font-sans font-medium">
+                Current role
+              </Label>
+              <Input
+                id="currentRole"
+                className="input-glass h-14 text-base font-sans"
+                placeholder="college student, high school student"
+                value={formData.currentRole}
+                onChange={(e) => updateField("currentRole", e.target.value)}
+              />
+            </div>
+
+            {/* Hobbies & Interests */}
+            <div className="space-y-2">
+              <Label htmlFor="hobbies" className="text-foreground font-sans font-medium">
+                Hobbies & interests
+              </Label>
+              <Input
+                id="hobbies"
+                className="input-glass h-14 text-base font-sans"
+                placeholder="e.g., photography, hiking, cooking"
+                value={formData.hobbies}
+                onChange={(e) => updateField("hobbies", e.target.value)}
+              />
             </div>
 
             {/* Submit Button */}

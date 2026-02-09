@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { gender, ageRange, country, recentTopics } = await req.json();
+    const { gender, ageRange, country, currentRole, hobbies, recentTopics } = await req.json();
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -48,15 +48,33 @@ serve(async (req) => {
       recentTopicsNote = `\n\nIMPORTANT: The user has recently practiced with these topics. Avoid generating topics that are too similar to these:\n${topicsList}\n\nGenerate topics that feel fresh and different from the ones listed above.`;
     }
 
+    const hobbiesList =
+      typeof hobbies === "string" && hobbies.trim().length > 0
+        ? hobbies
+            .split(",")
+            .map((h: string) => h.trim())
+            .filter(Boolean)
+            .slice(0, 6)
+            .join(", ")
+        : "";
+
+    const roleText = typeof currentRole === "string" && currentRole.trim().length > 0
+      ? currentRole.trim()
+      : "person";
+
+    const interestsText = hobbiesList.length > 0
+      ? `Their interests include: ${hobbiesList}.`
+      : "";
+
     const prompt = `Seed: ${seed}.
 
 ${themeHint}
 
-Generate 2 different casual conversation topics for a ${gender} who lives in ${country} between the ages of ${ageRange}.
+Generate 2 casual conversation topics for a ${gender} ${roleText} who lives in ${country} between the ages of ${ageRange}. ${interestsText}
 
 Requirements:
-- Each topic should be something they can speak about naturally for about 45 seconds to a minute and might elicit filler words.
-- Topics should be universal enough that anyone in this demographic would have something to say.
+- Each topic should be something they can speak about naturally for about 2 minutes and might elicit filler words.
+- Topics should relate to their interests or daily experiences when possible.
 - The two topics should feel clearly different from each other.${recentTopicsNote}
 
 Return the topics as a simple JSON array of exactly 2 strings, with no extra text or formatting.`;

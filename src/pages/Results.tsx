@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import {
   analyzeFillerWords,
   type FillerAnalysisResult,
@@ -8,7 +9,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
 import { WatercolorBlob } from "@/components/ui/WatercolorBlob";
+import { FillerCategoryCard } from "@/components/FillerCategoryCard";
 import { saveExerciseResult } from "@/lib/persistence";
+import { FILLER_CATEGORIES } from "@/lib/fillerWords";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const TYPEWRITER_MS_PER_CHAR = 40;
 
@@ -163,8 +167,10 @@ const Results = () => {
           });
         }, 400);
       }
-      const jitter = Math.floor(Math.random() * 11) - 5; // -5..5
-      const nextDelay = Math.max(35, Math.min(45, TYPEWRITER_MS_PER_CHAR + jitter));
+      const speedBoost = Math.min(8, Math.floor((index / len) * 8));
+      const jitter = Math.floor(Math.random() * 9) - 4; // -4..4
+      const base = TYPEWRITER_MS_PER_CHAR - speedBoost;
+      const nextDelay = Math.max(30, Math.min(45, base + jitter));
       timeoutId = window.setTimeout(tick, nextDelay);
     };
     timeoutId = window.setTimeout(tick, TYPEWRITER_MS_PER_CHAR);
@@ -221,6 +227,72 @@ const Results = () => {
       .slice(0, 5);
   }, [analysisResults]);
 
+  const categoryCards = useMemo(() => {
+    if (!analysisResults) return [];
+    const total = Math.max(1, analysisResults.totalFillerWords);
+    const categories = (Object.keys(analysisResults.categoryCounts) as FillerCategory[])
+      .map((category) => {
+        const count = analysisResults.categoryCounts[category];
+        const specificFillers = (FILLER_CATEGORIES[category] ?? [])
+          .map((word) => ({
+            word,
+            count: analysisResults.specificFillerCounts[word] ?? 0,
+          }))
+          .filter((f) => f.count > 0)
+          .sort((a, b) => b.count - a.count);
+
+        const usageInsight =
+          analysisResults.distributionAnalysis.beginning >=
+          Math.max(
+            analysisResults.distributionAnalysis.middle,
+            analysisResults.distributionAnalysis.end
+          )
+            ? "You used these most often near the beginning."
+            : analysisResults.distributionAnalysis.middle >=
+              analysisResults.distributionAnalysis.end
+            ? "You used these most often in the middle."
+            : "You used these most often toward the end.";
+
+        const descriptions: Record<FillerCategory, string> = {
+          hesitation: "Hesitation fillers indicate uncertainty or thinking pauses.",
+          discourse: "Discourse markers help bridge ideas but can become habitual.",
+          temporal: "Temporal fillers often appear when transitioning between ideas.",
+          thinking: "Thinking indicators signal you are searching for the right words.",
+        };
+
+        const whyUsed: Record<FillerCategory, string> = {
+          hesitation: "Often used while searching for the right word or organizing thoughts.",
+          discourse: "Used to keep the conversation flowing while you plan the next phrase.",
+          temporal: "Used to buy time before introducing a new idea or conclusion.",
+          thinking: "Used when you need a moment to structure the next point.",
+        };
+
+        const colors: Record<FillerCategory, string> = {
+          hesitation: "#7209B7",
+          discourse: "#F72585",
+          temporal: "#4CC9F0",
+          thinking: "#4ADE80",
+        };
+
+        return {
+          category,
+          count,
+          percentage: (count / total) * 100,
+          specificFillers,
+          description: descriptions[category],
+          whyUsed: whyUsed[category],
+          usageInsight,
+          color: colors[category],
+        };
+      })
+      .sort((a, b) => b.count - a.count);
+
+    return categories.map((item, index) => ({
+      ...item,
+      tier: index === 0 ? "large" : index === 1 ? "medium" : "small",
+    }));
+  }, [analysisResults]);
+
   if (typeof transcript !== "string" || transcript.trim() === "" || !analysisResults) {
     return null;
   }
@@ -231,6 +303,29 @@ const Results = () => {
   const totalCount = useCountUp(totalFillerWords, 800);
   const fpmCount = useCountUp(fillersPerMinute, 800);
 
+  const heroReveal = useScrollReveal({ threshold: 0.1 });
+  const categoryReveal = useScrollReveal({ threshold: 0.2 });
+  const chartReveal = useScrollReveal({ threshold: 0.4 });
+  const insightsReveal = useScrollReveal({ threshold: 0.55 });
+
+  const distributionData = [
+    {
+      label: "Beginning",
+      value: analysisResults.distributionAnalysis.beginning,
+      color: "#4CC9F0",
+    },
+    {
+      label: "Middle",
+      value: analysisResults.distributionAnalysis.middle,
+      color: "#F72585",
+    },
+    {
+      label: "End",
+      value: analysisResults.distributionAnalysis.end,
+      color: "#4ADE80",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-layered flex flex-col pb-24 relative">
       {/* Flash overlay */}
@@ -239,56 +334,148 @@ const Results = () => {
       <WatercolorBlob position="center-top" colorScheme="celebration" size={700} />
       <WatercolorBlob position="bottom-left" colorScheme="purple-pink" size={500} />
 
-      <div className="flex-1 px-6 py-10 max-w-3xl mx-auto w-full flex flex-col gap-8 relative z-10 page-transition">
-        {/* Top metrics */}
-        <section className="flex flex-wrap gap-4">
-          <GlassCard className="flex-1 min-w-[140px] p-6" hover={false}>
-            <p className="text-sm uppercase tracking-wide text-muted-foreground font-sans mb-1">
-              Total filler words
+      <div className="flex-1 px-6 py-10 max-w-3xl mx-auto w-full flex flex-col gap-20 md:gap-28 relative z-10">
+        {/* Section 1 - Hero metrics + transcript */}
+        <section
+          ref={heroReveal.ref}
+          className={`grid gap-8 md:grid-cols-[1.1fr_0.9fr] ${heroReveal.isVisible ? "section-reveal is-visible" : "section-reveal"}`}
+        >
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
+              <p className="text-sm uppercase tracking-[0.25em] text-muted-foreground font-sans">
+                Filler summary
+              </p>
+              <h1 className="text-5xl md:text-6xl font-serif font-bold text-foreground leading-tight">
+                {Math.round(totalCount)}
+                <span className="block text-xl md:text-2xl text-muted-foreground font-sans mt-2">
+                  Total fillers detected
+                </span>
+              </h1>
+            </div>
+            <div className="flex items-baseline gap-4">
+              <p className="text-4xl md:text-5xl font-serif font-bold text-foreground tabular-nums">
+                {fpmCount.toFixed(1)}
+              </p>
+              <span className="text-sm uppercase tracking-[0.2em] text-muted-foreground font-sans">
+                Fillers per minute
+              </span>
+            </div>
+          </div>
+          <div className="flex flex-col gap-3">
+            <p className="text-sm uppercase tracking-wide text-muted-foreground font-sans">
+              Your transcript
             </p>
-            <p className="text-4xl font-serif font-bold text-foreground tabular-nums">
-              {Math.round(totalCount)}
-            </p>
-          </GlassCard>
-          <GlassCard className="flex-1 min-w-[140px] p-6" hover={false}>
-            <p className="text-sm uppercase tracking-wide text-muted-foreground font-sans mb-1">
-              Fillers per minute
-            </p>
-            <p className="text-4xl font-serif font-bold text-foreground tabular-nums">
-              {fpmCount.toFixed(1)}
-            </p>
-          </GlassCard>
+            <div
+              className={`font-serif text-foreground leading-relaxed whitespace-pre-wrap min-h-[8rem] transition-opacity duration-300 ${
+                typewriterDone ? "opacity-90" : "opacity-100"
+              }`}
+            >
+              {segments.map((seg, i) =>
+                seg.type === "filler" ? (
+                  <span
+                    key={i}
+                    className={`rounded px-0.5 bg-destructive/15 text-destructive results-filler-glow ${
+                      glowPositions.has(seg.start) ? "results-filler-glow-animate" : ""
+                    }`}
+                  >
+                    {seg.text}
+                  </span>
+                ) : (
+                  <span key={i}>{seg.text}</span>
+                )
+              )}
+              {!typewriterDone && (
+                <span className="inline-block w-2 h-4 bg-foreground/60 typewriter-caret ml-0.5 align-baseline" />
+              )}
+            </div>
+          </div>
         </section>
 
-        {/* Transcript with typewriter and filler highlight */}
-        <GlassCard className="p-6" hover={false}>
-          <p className="text-sm uppercase tracking-wide text-muted-foreground font-sans mb-3">
-            Your transcript
-          </p>
-          <div
-            className={`font-serif text-foreground leading-relaxed whitespace-pre-wrap min-h-[8rem] transition-opacity duration-300 ${
-              typewriterDone ? "opacity-90" : "opacity-100"
-            }`}
-          >
-            {segments.map((seg, i) =>
-              seg.type === "filler" ? (
-                <span
-                  key={i}
-                  className={`rounded px-0.5 bg-destructive/15 text-destructive results-filler-glow ${
-                    glowPositions.has(seg.start) ? "results-filler-glow-animate" : ""
-                  }`}
-                >
-                  {seg.text}
-                </span>
-              ) : (
-                <span key={i}>{seg.text}</span>
-              )
-            )}
-            {!typewriterDone && (
-              <span className="inline-block w-2 h-4 bg-foreground/60 typewriter-caret ml-0.5 align-baseline" />
-            )}
+        {/* Category cards */}
+        <section
+          ref={categoryReveal.ref}
+          className={`flex flex-col gap-4 ${categoryReveal.isVisible ? "section-reveal is-visible" : "section-reveal"}`}
+        >
+          {categoryCards.map((card, index) => (
+            <div
+              key={card.category}
+              className={`stagger-item ${categoryReveal.isVisible ? "is-visible" : ""}`}
+              style={{ transitionDelay: `${index * 100}ms` }}
+            >
+              <FillerCategoryCard
+                categoryName={
+                  card.category === "hesitation"
+                    ? "Hesitation Fillers"
+                    : card.category === "discourse"
+                    ? "Discourse Markers"
+                    : card.category === "temporal"
+                    ? "Temporal Fillers"
+                    : "Thinking Indicators"
+                }
+                count={card.count}
+                percentage={card.percentage}
+                tier={card.tier}
+                specificFillers={card.specificFillers}
+                description={card.description}
+                whyUsed={card.whyUsed}
+                usageInsight={card.usageInsight}
+                color={card.color}
+              />
+            </div>
+          ))}
+        </section>
+
+        {/* Section 3 - Visual pattern chart */}
+        <section
+          ref={chartReveal.ref}
+          className={`glass-card p-6 md:p-8 ${chartReveal.isVisible ? "section-reveal is-visible" : "section-reveal"}`}
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-serif font-semibold text-foreground">
+              Filler distribution
+            </h2>
+            <span className="text-sm text-muted-foreground font-sans">
+              Beginning • Middle • End
+            </span>
           </div>
-        </GlassCard>
+          <div className="h-52">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={distributionData} margin={{ left: 0, right: 0, top: 0, bottom: 0 }}>
+                <XAxis dataKey="label" tickLine={false} axisLine={false} />
+                <YAxis hide />
+                <Tooltip
+                  cursor={{ fill: "rgba(198, 123, 92, 0.08)" }}
+                  contentStyle={{
+                    background: "rgba(255,255,255,0.9)",
+                    border: "1px solid rgba(198,123,92,0.2)",
+                    borderRadius: "12px",
+                  }}
+                />
+                <Bar dataKey="value" radius={[10, 10, 10, 10]}>
+                  {distributionData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </section>
+
+        {/* Section 4 - Contextual insights */}
+        <section
+          ref={insightsReveal.ref}
+          className={`flex flex-col gap-3 ${insightsReveal.isVisible ? "section-reveal is-visible" : "section-reveal"}`}
+        >
+          {analysisResults.patterns.insights.map((insight, index) => (
+            <div
+              key={insight}
+              className={`insight-card ${insightsReveal.isVisible ? "is-visible" : ""}`}
+              style={{ transitionDelay: `${index * 150}ms` }}
+            >
+              <p className="text-sm text-foreground font-sans">{insight}</p>
+            </div>
+          ))}
+        </section>
 
         {/* Detailed metrics */}
         <GlassCard className="p-6 space-y-6" hover={false}>
@@ -339,7 +526,7 @@ const Results = () => {
         </GlassCard>
 
         {/* Buttons */}
-        <section className="flex flex-wrap gap-4 pt-4">
+        <section className="flex flex-wrap gap-4 pt-4 sticky bottom-6 bg-gradient-to-t from-background/90 to-transparent backdrop-blur-sm pb-4">
           <Button
             onClick={() => navigate("/topics")}
             className="btn-warm font-sans"

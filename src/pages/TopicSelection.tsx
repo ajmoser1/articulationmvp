@@ -39,6 +39,8 @@ const TopicSelection = () => {
             gender: demo.gender,
             ageRange: demo.ageRange,
             country: demo.country,
+            currentRole: demo.currentRole,
+            hobbies: demo.hobbies,
             recentTopics: recentTopics.length > 0 ? recentTopics : undefined,
           }),
         }

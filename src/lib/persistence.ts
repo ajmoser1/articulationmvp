@@ -5,6 +5,8 @@ export interface UserDemographics {
   gender: string;
   ageRange: string;
   country: string;
+  currentRole: string;
+  hobbies: string;
 }
 
 export interface StoredExerciseResult {
@@ -93,14 +95,21 @@ export function getDemographics(): UserDemographics | null {
   if (!raw) return null;
   try {
     const parsed = JSON.parse(raw) as UserDemographics;
-    if (
-      typeof parsed === "object" &&
-      parsed !== null &&
-      typeof parsed.gender === "string" &&
-      typeof parsed.ageRange === "string" &&
-      typeof parsed.country === "string"
-    ) {
-      return parsed;
+    if (typeof parsed === "object" && parsed !== null) {
+      const record = parsed as Partial<UserDemographics>;
+      if (
+        typeof record.gender === "string" &&
+        typeof record.ageRange === "string" &&
+        typeof record.country === "string"
+      ) {
+        return {
+          gender: record.gender,
+          ageRange: record.ageRange,
+          country: record.country,
+          currentRole: typeof record.currentRole === "string" ? record.currentRole : "",
+          hobbies: typeof record.hobbies === "string" ? record.hobbies : "",
+        };
+      }
     }
   } catch {
     // Corrupted data; clear it

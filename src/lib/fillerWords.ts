@@ -35,6 +35,9 @@ export interface FillerAnalysisResult {
   specificFillerCounts: Record<string, number>;
   fillerPositions: FillerPosition[];
   distributionAnalysis: DistributionAnalysis;
+  detectionAccuracy: number;
+  detectionSummary: string;
+  patterns: FillerPatternAnalysis;
 }
 
 /** Internal: a match with position and length for overlap handling */
@@ -43,6 +46,28 @@ interface MatchWithLength {
   category: FillerCategory;
   position: number;
   length: number;
+}
+
+interface WordToken {
+  word: string;
+  start: number;
+  end: number;
+}
+
+export interface FillerPatternAnalysis {
+  positionPatterns: {
+    startOfSpeech: number;
+    midSpeech: number;
+    endOfSpeech: number;
+  };
+  contextPatterns: {
+    whenExplaining: number;
+    whenListing: number;
+    whenTransitioning: number;
+    whenAnswering: number;
+    midSentence: number;
+  };
+  insights: string[];
 }
 
 // ---------------------------------------------------------------------------
@@ -145,6 +170,261 @@ function findAllFillerMatches(transcript: string): MatchWithLength[] {
   return nonOverlapping;
 }
 
+function tokenizeWords(transcript: string): WordToken[] {
+  const tokens: WordToken[] = [];
+  const re = /[A-Za-z']+/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(transcript)) !== null) {
+    tokens.push({ word: m[0], start: m.index, end: m.index + m[0].length });
+  }
+  return tokens;
+}
+
+function findTokenIndex(tokens: WordToken[], position: number): number {
+  for (let i = 0; i < tokens.length; i++) {
+    if (tokens[i].start <= position && position < tokens[i].end) return i;
+  }
+  return -1;
+}
+
+function getWordContext(tokens: WordToken[], tokenIndex: number) {
+  const before = tokens.slice(Math.max(0, tokenIndex - 3), tokenIndex).map((t) => t.word.toLowerCase());
+  const after = tokens.slice(tokenIndex + 1, tokenIndex + 4).map((t) => t.word.toLowerCase());
+  return { before, after };
+}
+
+function isPrecededBy(tokens: WordToken[], tokenIndex: number, words: string[]): boolean {
+  const { before } = getWordContext(tokens, tokenIndex);
+  return before.some((w) => words.includes(w));
+}
+
+function isFollowedBy(tokens: WordToken[], tokenIndex: number, words: string[]): boolean {
+  const { after } = getWordContext(tokens, tokenIndex);
+  return after.some((w) => words.includes(w));
+}
+
+function isPartOfPhrase(transcript: string, position: number, phrases: string[]): boolean {
+  const windowStart = Math.max(0, position - 20);
+  const windowEnd = Math.min(transcript.length, position + 40);
+  const slice = transcript.slice(windowStart, windowEnd).toLowerCase();
+  return phrases.some((p) => slice.includes(p));
+}
+
+function isSentenceStart(transcript: string, position: number): boolean {
+  for (let i = position - 1; i >= 0; i--) {
+    const ch = transcript[i];
+    if (/[A-Za-z]/.test(ch)) return false;
+    if (/[.!?]/.test(ch)) return true;
+  }
+  return true;
+}
+
+function hasNearbyPausePunctuation(transcript: string, position: number, length: number): boolean {
+  const before = transcript.slice(Math.max(0, position - 2), position);
+  const after = transcript.slice(position + length, position + length + 2);
+  return /[,;—-]/.test(before) || /[,;—-]/.test(after);
+}
+
+function normalizeMatch(match: string): string {
+  return match.toLowerCase().replace(/[^\w\s']/g, "").replace(/\s+/g, " ").trim();
+}
+
+function shouldFlagFiller(
+  transcript: string,
+  match: MatchWithLength,
+  tokens: WordToken[]
+): boolean {
+  const normalized = normalizeMatch(match.word);
+  const tokenIndex = findTokenIndex(tokens, match.position);
+  const { before, after } = tokenIndex >= 0 ? getWordContext(tokens, tokenIndex) : { before: [], after: [] };
+
+  if (normalized === "you know") return true;
+
+  if (normalized === "like") {
+    const beLike = ["was", "is", "were", "are", "am", "be", "been", "being", "looks", "look", "looked", "sounds", "sound", "sounded", "feels", "feel", "felt"];
+    const determiners = ["this", "that", "these", "those", "my", "your", "his", "her", "its", "our", "their", "a", "an", "the", "some", "any", "each", "every", "no", "another", "either", "neither", "both", "few", "many", "much", "several"];
+    const pronouns = ["him", "her", "them", "me", "us", "you", "i", "he", "she", "we", "they", "it", "someone", "somebody", "something", "anyone", "anybody", "anything"];
+    const skipPhrases = ["would like", "i'd like", "id like", "i would like"];
+    if (isPrecededBy(tokens, tokenIndex, beLike)) return false;
+    if (isFollowedBy(tokens, tokenIndex, [...determiners, ...pronouns])) return false;
+    if (isPartOfPhrase(transcript, match.position, skipPhrases)) return false;
+    return hasNearbyPausePunctuation(transcript, match.position, match.length);
+  }
+
+  if (normalized === "so") {
+    const intensifiers = ["good", "bad", "happy", "sad", "great", "small", "big", "tired", "excited", "important", "funny", "hard", "easy", "simple", "beautiful"];
+    if (isFollowedBy(tokens, tokenIndex, ["that"])) return false;
+    if (isSentenceStart(transcript, match.position) && /,/.test(transcript.slice(match.position + match.length, match.position + match.length + 2))) {
+      return false;
+    }
+    if (isFollowedBy(tokens, tokenIndex, intensifiers)) return false;
+    return hasNearbyPausePunctuation(transcript, match.position, match.length);
+  }
+
+  if (normalized === "well") {
+    if (isPartOfPhrase(transcript, match.position, ["as well", "might as well"])) return false;
+    const pronouns = ["i", "you", "we", "he", "she", "they", "it"];
+    return isSentenceStart(transcript, match.position) && (isFollowedBy(tokens, tokenIndex, pronouns) || /,/.test(transcript.slice(match.position + match.length, match.position + match.length + 2)));
+  }
+
+  if (normalized === "actually" || normalized === "basically") {
+    const correctionCues = ["not", "no", "just", "rather", "specifically", "in", "because"];
+    if (isFollowedBy(tokens, tokenIndex, correctionCues)) return false;
+    return true;
+  }
+
+  if (normalized === "i mean") {
+    const clarificationCues = ["that", "because", "if", "when", "what", "where", "why", "how", "to", "for", "by"];
+    if (isFollowedBy(tokens, tokenIndex, clarificationCues)) return false;
+    return true;
+  }
+
+  return true;
+}
+
+function analyzeFillerPatterns(
+  transcript: string,
+  fillerPositions: Array<{ word: string; position: number }>
+): FillerPatternAnalysis {
+  const tokens = tokenizeWords(transcript);
+  const total = Math.max(1, fillerPositions.length);
+  const len = transcript.length;
+  const startCutoff = len * 0.2;
+  const endCutoff = len * 0.8;
+
+  const positionPatterns = {
+    startOfSpeech: 0,
+    midSpeech: 0,
+    endOfSpeech: 0,
+  };
+
+  const contextPatterns = {
+    whenExplaining: 0,
+    whenListing: 0,
+    whenTransitioning: 0,
+    whenAnswering: 0,
+    midSentence: 0,
+  };
+
+  const explainCues = ["because", "since", "essentially", "basically", "the", "reason", "in", "other", "words"];
+  const listingCues = ["first", "second", "third", "also", "and", "or"];
+  const transitionCues = ["so", "now", "then", "moving", "on", "anyway", "but", "however"];
+
+  const questionMarkPositions: number[] = [];
+  for (let i = 0; i < transcript.length; i++) {
+    if (transcript[i] === "?") questionMarkPositions.push(i);
+  }
+
+  const isNearCue = (tokenIndex: number, cues: string[]) => {
+    const { before, after } = getWordContext(tokens, tokenIndex);
+    const windowWords = [...before, tokens[tokenIndex]?.word?.toLowerCase(), ...after].filter(Boolean);
+    return windowWords.some((w) => cues.includes(w));
+  };
+
+  const isNearExplanationPhrase = (tokenIndex: number) => {
+    const { before, after } = getWordContext(tokens, tokenIndex);
+    const windowWords = [...before, tokens[tokenIndex]?.word?.toLowerCase(), ...after].filter(Boolean);
+    const joined = windowWords.join(" ");
+    return (
+      windowWords.includes("because") ||
+      windowWords.includes("since") ||
+      windowWords.includes("essentially") ||
+      windowWords.includes("basically") ||
+      joined.includes("the reason") ||
+      joined.includes("in other words")
+    );
+  };
+
+  const isNearListing = (tokenIndex: number) => {
+    if (isNearCue(tokenIndex, listingCues)) return true;
+    const token = tokens[tokenIndex];
+    if (!token) return false;
+    const window = transcript.slice(Math.max(0, token.start - 40), token.end + 40);
+    const commaCount = (window.match(/,/g) ?? []).length;
+    const andCount = (window.match(/\band\b/gi) ?? []).length;
+    return commaCount >= 2 || andCount >= 2;
+  };
+
+  const isNearTransition = (tokenIndex: number) => {
+    const { before, after } = getWordContext(tokens, tokenIndex);
+    const joined = [...before, tokens[tokenIndex]?.word?.toLowerCase(), ...after]
+      .filter(Boolean)
+      .join(" ");
+    return (
+      isNearCue(tokenIndex, transitionCues) ||
+      joined.includes("moving on") ||
+      joined.includes("anyway")
+    );
+  };
+
+  const isNearAnswering = (position: number) => {
+    if (position <= 0) return false;
+    if (position <= transcript.length * 0.15) return true;
+    return questionMarkPositions.some((q) => position - q >= 0 && position - q < 40);
+  };
+
+  const isMidSentence = (position: number, length: number) => {
+    const before = transcript.slice(Math.max(0, position - 40), position);
+    const after = transcript.slice(position + length, position + length + 40);
+    const nearBoundaryBefore = /[.!?]/.test(before);
+    const nearBoundaryAfter = /[.!?]/.test(after);
+    return !(nearBoundaryBefore || nearBoundaryAfter);
+  };
+
+  for (const filler of fillerPositions) {
+    if (filler.position < startCutoff) positionPatterns.startOfSpeech++;
+    else if (filler.position >= endCutoff) positionPatterns.endOfSpeech++;
+    else positionPatterns.midSpeech++;
+
+    const tokenIndex = findTokenIndex(tokens, filler.position);
+    if (tokenIndex >= 0) {
+      if (isNearExplanationPhrase(tokenIndex)) contextPatterns.whenExplaining++;
+      if (isNearListing(tokenIndex)) contextPatterns.whenListing++;
+      if (isNearTransition(tokenIndex)) contextPatterns.whenTransitioning++;
+    }
+
+    if (isNearAnswering(filler.position)) contextPatterns.whenAnswering++;
+    if (isMidSentence(filler.position, filler.word.length)) contextPatterns.midSentence++;
+  }
+
+  const insights: string[] = [];
+  const startPct = (positionPatterns.startOfSpeech / total) * 100;
+  if (startPct > 40) {
+    insights.push(
+      "Most fillers appeared when starting to speak—try taking a breath before beginning."
+    );
+  }
+
+  const contextEntries: Array<[keyof FillerPatternAnalysis["contextPatterns"], number]> = Object.entries(
+    contextPatterns
+  ) as Array<[keyof FillerPatternAnalysis["contextPatterns"], number]>;
+  contextEntries.sort((a, b) => b[1] - a[1]);
+  const topContext = contextEntries[0]?.[0];
+
+  if (topContext === "whenExplaining") {
+    insights.push(
+      "You used more fillers when explaining concepts—practice explaining complex ideas beforehand."
+    );
+  } else if (topContext === "whenListing") {
+    insights.push(
+      "Fillers increased when listing multiple items—try organizing lists mentally first."
+    );
+  } else if (topContext === "whenTransitioning") {
+    insights.push(
+      "Fillers appeared when changing topics—plan your transitions ahead of time."
+    );
+  }
+
+  const midSentencePct = (contextPatterns.midSentence / total) * 100;
+  if (midSentencePct > 40) {
+    insights.push(
+      "Many fillers mid-sentence suggest thinking while speaking—slow down slightly."
+    );
+  }
+
+  return { positionPatterns, contextPatterns, insights };
+}
+
 /**
  * Compute distribution: count fillers in first third, middle third, and last third of transcript (by character position).
  */
@@ -190,8 +470,11 @@ export function analyzeFillerWords(
   durationMinutes: number
 ): FillerAnalysisResult {
   const matches = findAllFillerMatches(transcript);
+  const tokens = tokenizeWords(transcript);
 
-  const totalFillerWords = matches.length;
+  const flaggedMatches = matches.filter((m) => shouldFlagFiller(transcript, m, tokens));
+  const skippedCount = matches.length - flaggedMatches.length;
+  const totalFillerWords = flaggedMatches.length;
   const fillersPerMinute =
     durationMinutes > 0 ? totalFillerWords / durationMinutes : 0;
 
@@ -205,7 +488,7 @@ export function analyzeFillerWords(
   const fillerPositions: FillerPosition[] = [];
   const positionsForDistribution: number[] = [];
 
-  for (const m of matches) {
+  for (const m of flaggedMatches) {
     categoryCounts[m.category]++;
     const key = m.word.toLowerCase();
     specificFillerCounts[key] = (specificFillerCounts[key] ?? 0) + 1;
@@ -218,6 +501,10 @@ export function analyzeFillerWords(
     positionsForDistribution
   );
 
+  const detectionAccuracy =
+    matches.length === 0 ? 100 : Math.round((flaggedMatches.length / matches.length) * 100);
+  const detectionSummary = `Analyzed ${matches.length} potential fillers, flagged ${flaggedMatches.length} as actual fillers (${detectionAccuracy}% detection confidence)`;
+
   return {
     totalFillerWords,
     fillersPerMinute,
@@ -225,5 +512,8 @@ export function analyzeFillerWords(
     specificFillerCounts,
     fillerPositions,
     distributionAnalysis,
+    detectionAccuracy,
+    detectionSummary,
+    patterns: analyzeFillerPatterns(transcript, fillerPositions),
   };
 }
