@@ -95,19 +95,19 @@ const Questionnaire = () => {
     <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-24 flex flex-col relative page-transition">
       <FuturismBlock
         variant="block-2"
-        className="top-[-240px] right-[-220px] futurism-strong"
+        className="top-8 right-[-140px] futurism-strong"
         borderColor="#F72585"
         zIndex={1}
       />
       <FuturismBlock
         variant="triangle-2"
-        className="bottom-[-160px] left-[-140px]"
+        className="bottom-[-40px] left-[-80px]"
         borderColor="#4CC9F0"
         zIndex={2}
       />
       <FuturismBlock
         variant="stripe-2"
-        className="top-14 right-[-260px]"
+        className="top-24 right-[-140px]"
         zIndex={1}
       />
       <div className="mb-8 relative z-10">

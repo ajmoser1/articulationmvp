@@ -333,30 +333,30 @@ const Results = () => {
 
       <FuturismBlock
         variant="block-1"
-        className="top-[-220px] right-[-260px] futurism-intense"
+        className="top-6 right-[-140px] futurism-intense"
         borderColor="#F72585"
         zIndex={1}
       />
       <FuturismBlock
         variant="block-3"
-        className="top-[-80px] left-[-280px] futurism-intense"
+        className="top-20 left-[-140px] futurism-intense"
         borderColor="#4CC9F0"
         zIndex={2}
       />
       <FuturismBlock
         variant="triangle-2"
-        className="bottom-[-200px] left-[-160px] futurism-intense"
+        className="bottom-[-60px] left-[-100px] futurism-intense"
         borderColor="#4ADE80"
         zIndex={2}
       />
       <FuturismBlock
         variant="stripe-1"
-        className="top-14 right-[-260px]"
+        className="top-24 right-[-140px]"
         zIndex={1}
       />
       <FuturismBlock
         variant="stripe-2"
-        className="top-44 left-[-260px]"
+        className="top-44 left-[-140px]"
         zIndex={1}
       />
 

@@ -104,19 +104,19 @@ const TopicSelection = () => {
     <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-24 flex flex-col relative page-transition">
       <FuturismBlock
         variant="block-3"
-        className="top-[-180px] right-[-260px]"
+        className="top-6 right-[-140px]"
         borderColor="#7209B7"
         zIndex={1}
       />
       <FuturismBlock
         variant="block-4"
-        className="top-[-60px] left-[-200px]"
+        className="top-20 left-[-120px]"
         borderColor="#4ADE80"
         zIndex={2}
       />
       <FuturismBlock
         variant="stripe-3"
-        className="top-24 right-[-260px]"
+        className="top-32 right-[-140px]"
         zIndex={1}
       />
       {/* Header */}

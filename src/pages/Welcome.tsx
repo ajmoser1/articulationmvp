@@ -21,19 +21,19 @@ const Welcome = () => {
     <div className="min-h-screen bg-gradient-layered px-6 py-12 pb-24 flex flex-col relative page-transition">
       <FuturismBlock
         variant="block-1"
-        className="top-[-220px] right-[-260px] futurism-strong"
+        className="top-10 right-[-120px] futurism-strong"
         borderColor="#7209B7"
         zIndex={1}
       />
       <FuturismBlock
         variant="triangle-1"
-        className="bottom-[-180px] left-[-160px]"
+        className="bottom-[-40px] left-[-80px]"
         borderColor="#F72585"
         zIndex={2}
       />
       <FuturismBlock
         variant="stripe-1"
-        className="top-10 right-[-220px]"
+        className="top-28 right-[-120px]"
         zIndex={1}
       />
       <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full relative z-10">

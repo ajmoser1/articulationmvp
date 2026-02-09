@@ -213,24 +213,24 @@ const Practice = () => {
     <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-24 flex flex-col relative page-transition">
       <FuturismBlock
         variant="block-1"
-        className="top-[-220px] right-[-260px] futurism-strong"
+        className="top-6 right-[-140px] futurism-strong"
         borderColor="#4CC9F0"
         zIndex={1}
       />
       <FuturismBlock
         variant="block-2"
-        className="bottom-[-260px] left-[-220px]"
+        className="bottom-[-60px] left-[-120px]"
         borderColor="#F72585"
         zIndex={2}
       />
       <FuturismBlock
         variant="stripe-1"
-        className="top-24 right-[-240px]"
+        className="top-28 right-[-140px]"
         zIndex={1}
       />
       <FuturismBlock
         variant="stripe-2"
-        className="top-56 left-[-240px]"
+        className="top-56 left-[-140px]"
         zIndex={1}
       />
       <div className="mb-8 relative z-10">

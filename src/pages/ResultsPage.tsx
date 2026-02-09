@@ -39,25 +39,25 @@ const ProgressPage = () => {
     <div className="min-h-screen bg-gradient-layered px-6 py-10 pb-24 flex flex-col items-center relative page-transition">
       <FuturismBlock
         variant="block-4"
-        className="top-[-140px] left-[-220px]"
+        className="top-10 left-[-120px]"
         borderColor="#4CC9F0"
         zIndex={1}
       />
       <FuturismBlock
         variant="block-2"
-        className="bottom-[-260px] right-[-240px]"
+        className="bottom-[-60px] right-[-140px]"
         borderColor="#F72585"
         zIndex={2}
       />
       <FuturismBlock
         variant="triangle-1"
-        className="top-[-60px] right-[-140px]"
+        className="top-16 right-[-80px]"
         borderColor="#4ADE80"
         zIndex={1}
       />
       <FuturismBlock
         variant="stripe-3"
-        className="top-24 right-[-260px]"
+        className="top-28 right-[-140px]"
         zIndex={1}
       />
       <div className="w-full max-w-3xl space-y-8 relative z-10">
