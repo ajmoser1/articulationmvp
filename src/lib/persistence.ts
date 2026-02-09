@@ -36,6 +36,7 @@ const DEMOGRAPHICS_KEY = "user_demographics";
 // Legacy key used before introducing this utility
 const LEGACY_DEMOGRAPHICS_KEY = "userDemographics";
 const EXERCISE_HISTORY_KEY = "exercise_history";
+const SELECTED_TOPIC_KEY = "selectedTopic";
 
 // Rough localStorage limit is ~5MB; keep a safety margin.
 const STORAGE_SOFT_LIMIT_BYTES = 4.5 * 1024 * 1024;
@@ -180,6 +181,17 @@ export function saveExerciseResult(result: StoredExerciseResult): void {
 
 export function getExerciseHistory(): StoredExerciseResult[] {
   return getRawExerciseHistory();
+}
+
+export function clearExerciseHistory(): void {
+  safeRemoveItem(EXERCISE_HISTORY_KEY);
+}
+
+export function clearLocalData(): void {
+  safeRemoveItem(EXERCISE_HISTORY_KEY);
+  safeRemoveItem(DEMOGRAPHICS_KEY);
+  safeRemoveItem(LEGACY_DEMOGRAPHICS_KEY);
+  safeRemoveItem(SELECTED_TOPIC_KEY);
 }
 
 export function getProgressStats(): ProgressStats {

@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Loader2, MessageCircle, RefreshCw, Settings } from "lucide-react";
+import { ArrowLeft, Loader2, MessageCircle, RefreshCw, Settings, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { getDemographics, getExerciseHistory, type UserDemographics } from "@/lib/persistence";
+import { clearLocalData, getDemographics, getExerciseHistory, type UserDemographics } from "@/lib/persistence";
 import { GlassCard } from "@/components/ui/glass-card";
 import { FuturismBlock } from "@/components/ui/FuturismBlock";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const FALLBACK_TOPICS = [
   "Describe your morning routine",
@@ -100,6 +101,18 @@ const TopicSelection = () => {
     }
   };
 
+  const handleClearLocalData = () => {
+    const confirmed = window.confirm(
+      "Clear your exercise history and local data? This cannot be undone."
+    );
+    if (!confirmed) return;
+    clearLocalData();
+    toast({
+      title: "Local data cleared",
+      description: "Exercise history and saved demographics were removed.",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-24 flex flex-col relative page-transition">
       <FuturismBlock
@@ -119,6 +132,37 @@ const TopicSelection = () => {
         className="top-32 right-[-140px]"
         zIndex={1}
       />
+      {/* Sticky options */}
+      <div className="fixed top-6 right-20 z-40">
+        <Popover>
+          <PopoverTrigger asChild>
+            <button
+              className="h-11 w-11 flex items-center justify-center glass-subtle text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Open options"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent align="end" sideOffset={8} className="w-64">
+            <div className="space-y-2">
+              <button
+                onClick={() => navigate("/questionnaire")}
+                className="w-full flex items-center justify-between px-3 py-2 rounded-md text-sm text-foreground hover:bg-muted/40 transition-colors"
+              >
+                Edit demographics
+              </button>
+              <button
+                onClick={handleClearLocalData}
+                className="w-full flex items-center justify-between px-3 py-2 rounded-md text-sm text-destructive hover:bg-destructive/10 transition-colors"
+              >
+                <span>Clear local data</span>
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          </PopoverContent>
+        </Popover>
+      </div>
+
       {/* Header */}
       <div className="mb-8 flex items-center justify-between relative z-10">
         <button
@@ -138,13 +182,6 @@ const TopicSelection = () => {
               New topics
             </button>
           )}
-          <button
-            onClick={() => navigate("/questionnaire")}
-            className="h-11 w-11 flex items-center justify-center glass-subtle text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="Edit demographics"
-          >
-            <Settings className="w-4 h-4" />
-          </button>
         </div>
       </div>
 
