@@ -186,6 +186,16 @@
     padding-bottom: calc(32px + env(safe-area-inset-bottom));
   }
 
+  @media (min-width: 768px) {
+    html, body {
+      overflow: hidden;
+    }
+
+    .page-transition {
+      padding: 20px 20px 24px !important;
+    }
+  }
+
   html {
     font-family: var(--font-sans);
     font-size: 16px;
@@ -1104,6 +1114,13 @@
   transition: none !important;
 }
 
+[data-perf="low"] .page-transition > *,
+[data-perf="low"] .animate-fade-in,
+[data-perf="low"] .glass-entrance {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 [data-perf="low"] .futurism-block {
   animation: none !important;
 }
@@ -1229,5 +1246,12 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .page-transition > *,
+  .animate-fade-in,
+  .glass-entrance {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
