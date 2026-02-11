@@ -218,7 +218,6 @@
     @apply bg-background text-foreground antialiased;
     line-height: 1.75;
     position: relative;
-    overscroll-behavior-y: none;
     -webkit-overflow-scrolling: touch;
   }
 

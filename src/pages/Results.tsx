@@ -462,7 +462,7 @@ const Results = () => {
         zIndex={2}
       />
 
-      <div className="flex-1 px-6 py-10 max-w-3xl mx-auto w-full flex flex-col gap-20 md:gap-28 relative z-10">
+      <div className="px-6 py-10 pb-24 max-w-3xl mx-auto w-full flex flex-col gap-20 md:gap-28 relative z-10">
         {/* Section 1 - Hero metrics + transcript */}
         <section
           ref={heroReveal.ref}
@@ -663,7 +663,7 @@ const Results = () => {
         </GlassCard>
 
         {/* Buttons */}
-        <section className="flex flex-wrap gap-4 pt-4 sticky bottom-6 bg-gradient-to-t from-background/90 to-transparent backdrop-blur-sm pb-4">
+        <section className="flex flex-wrap gap-4 pt-4 md:sticky md:bottom-6 bg-gradient-to-t from-background/90 to-transparent backdrop-blur-sm pb-4">
           <Button
             onClick={() => navigate("/onboarding/topics")}
             className="btn-warm font-sans"
