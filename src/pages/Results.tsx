@@ -417,7 +417,7 @@ const Results = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-layered flex flex-col pb-24 relative">
+    <div className="min-h-[100dvh] bg-gradient-layered pb-24 relative overflow-visible">
       {/* Flash overlay */}
       {flashKey > 0 && <div key={flashKey} className="results-flash-overlay" />}
 
@@ -462,7 +462,7 @@ const Results = () => {
         zIndex={2}
       />
 
-      <div className="px-6 py-10 pb-24 max-w-3xl mx-auto w-full flex flex-col gap-20 md:gap-28 relative z-10">
+      <div className="px-6 py-10 pb-28 max-w-3xl mx-auto w-full flex flex-col gap-16 md:gap-20 relative z-10">
         {/* Section 1 - Hero metrics + transcript */}
         <section
           ref={heroReveal.ref}
@@ -663,7 +663,7 @@ const Results = () => {
         </GlassCard>
 
         {/* Buttons */}
-        <section className="flex flex-wrap gap-4 pt-4 md:sticky md:bottom-6 bg-gradient-to-t from-background/90 to-transparent backdrop-blur-sm pb-4">
+        <section className="flex flex-wrap gap-4 pt-4 pb-6">
           <Button
             onClick={() => navigate("/onboarding/topics")}
             className="btn-warm font-sans"
