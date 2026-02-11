@@ -6,6 +6,7 @@ type UploadResponse = { upload_url: string };
 type TranscriptCreateBody = {
   audio_url: string;
   speech_models: ("universal-3-pro" | "universal-2")[];
+  disfluencies: boolean;
 };
 type TranscriptCreateResponse = { id: string };
 type TranscriptStatus = "queued" | "processing" | "completed" | "error";
@@ -56,6 +57,7 @@ async function createTranscript(
   const body: TranscriptCreateBody = {
     audio_url: audioUrl,
     speech_models: ["universal-2"],
+    disfluencies: true,
   };
   const res = await fetch(`${ASSEMBLYAI_BASE}/transcript`, {
     method: "POST",
