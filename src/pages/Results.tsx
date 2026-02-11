@@ -503,27 +503,31 @@ const Results = () => {
               Your transcript
             </p>
             <div
-              className={`font-serif text-foreground leading-relaxed whitespace-pre-wrap min-h-[8rem] transition-opacity duration-300 ${
+              className={`relative font-serif text-foreground leading-relaxed whitespace-pre-wrap min-h-[10rem] transition-opacity duration-300 ${
                 typewriterDone ? "opacity-90" : "opacity-100"
               }`}
             >
-              {segments.map((seg, i) =>
-                seg.type === "filler" ? (
-                  <span
-                    key={i}
-                    className={`rounded px-0.5 bg-destructive/15 text-destructive results-filler-glow ${
-                      glowPositions.has(seg.start) ? "results-filler-glow-animate" : ""
-                    }`}
-                  >
-                    {seg.text}
-                  </span>
-                ) : (
-                  <span key={i}>{seg.text}</span>
-                )
-              )}
-              {!typewriterDone && (
-                <span className="inline-block w-2 h-4 bg-foreground/60 typewriter-caret ml-0.5 align-baseline" />
-              )}
+              {/* Reserve full height up-front so page height doesn't shift while typing */}
+              <div className="invisible whitespace-pre-wrap">{transcript}</div>
+              <div className="absolute inset-0">
+                {segments.map((seg, i) =>
+                  seg.type === "filler" ? (
+                    <span
+                      key={i}
+                      className={`rounded px-0.5 results-filler-highlight results-filler-glow ${
+                        glowPositions.has(seg.start) ? "results-filler-glow-animate" : ""
+                      }`}
+                    >
+                      {seg.text}
+                    </span>
+                  ) : (
+                    <span key={i}>{seg.text}</span>
+                  )
+                )}
+                {!typewriterDone && (
+                  <span className="inline-block w-2 h-4 bg-foreground/60 typewriter-caret ml-0.5 align-baseline" />
+                )}
+              </div>
             </div>
           </div>
         </section>

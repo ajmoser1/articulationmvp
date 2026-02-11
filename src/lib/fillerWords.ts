@@ -248,7 +248,7 @@ function shouldFlagFiller(
     if (isPrecededBy(tokens, tokenIndex, beLike)) return false;
     if (isFollowedBy(tokens, tokenIndex, [...determiners, ...pronouns])) return false;
     if (isPartOfPhrase(transcript, match.position, skipPhrases)) return false;
-    return hasNearbyPausePunctuation(transcript, match.position, match.length);
+    return true;
   }
 
   if (normalized === "so") {
@@ -258,13 +258,12 @@ function shouldFlagFiller(
       return false;
     }
     if (isFollowedBy(tokens, tokenIndex, intensifiers)) return false;
-    return hasNearbyPausePunctuation(transcript, match.position, match.length);
+    return true;
   }
 
   if (normalized === "well") {
     if (isPartOfPhrase(transcript, match.position, ["as well", "might as well"])) return false;
-    const pronouns = ["i", "you", "we", "he", "she", "they", "it"];
-    return isSentenceStart(transcript, match.position) && (isFollowedBy(tokens, tokenIndex, pronouns) || /,/.test(transcript.slice(match.position + match.length, match.position + match.length + 2)));
+    return true;
   }
 
   if (normalized === "actually" || normalized === "basically") {
