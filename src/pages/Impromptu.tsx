@@ -243,7 +243,7 @@ const Impromptu = () => {
 
       <div className="mb-8 relative z-10">
         <button
-          onClick={() => navigate("/topics")}
+          onClick={() => navigate("/onboarding/topics")}
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors font-sans text-sm"
           disabled={phase === "recording"}
         >

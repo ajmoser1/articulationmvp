@@ -30,7 +30,7 @@ const Practice = () => {
   useEffect(() => {
     const storedTopic = localStorage.getItem("selectedTopic");
     if (!storedTopic) {
-      navigate("/topics");
+      navigate("/onboarding/topics");
       return;
     }
     setTopic(storedTopic);
@@ -79,7 +79,7 @@ const Practice = () => {
         const transcript = await transcribeAudio(blob);
         const durationMinutes = Math.max(0.1, durationSeconds / 60);
         const analysisResults = analyzeFillerWords(transcript, durationMinutes);
-        navigate("/results", {
+        navigate("/onboarding/results", {
           state: { transcript, analysisResults, durationMinutes },
         });
       } catch (err) {
@@ -235,7 +235,7 @@ const Practice = () => {
       />
       <div className="mb-8 relative z-10">
         <button
-          onClick={() => navigate("/topics")}
+          onClick={() => navigate("/onboarding/topics")}
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors font-sans text-sm"
           disabled={recordingState === "recording"}
         >

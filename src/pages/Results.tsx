@@ -181,7 +181,7 @@ const Results = () => {
 
   useEffect(() => {
     if (typeof transcript !== "string" || transcript.trim() === "") {
-      navigate("/practice", { replace: true });
+      navigate("/onboarding/practice", { replace: true });
     }
   }, [transcript, navigate]);
 
@@ -554,7 +554,7 @@ const Results = () => {
         {/* Buttons */}
         <section className="flex flex-wrap gap-4 pt-4 sticky bottom-6 bg-gradient-to-t from-background/90 to-transparent backdrop-blur-sm pb-4">
           <Button
-            onClick={() => navigate("/topics")}
+            onClick={() => navigate("/onboarding/topics")}
             className="btn-warm font-sans"
           >
             Try Another Topic
@@ -562,7 +562,12 @@ const Results = () => {
           <Button
             variant="secondary"
             className="btn-glass font-sans"
-            onClick={() => navigate("/progress")}
+            onClick={() => {
+              if (typeof window !== "undefined") {
+                window.localStorage.setItem("onboarding_complete", "true");
+              }
+              navigate("/communication-profile");
+            }}
           >
             View Progress
           </Button>

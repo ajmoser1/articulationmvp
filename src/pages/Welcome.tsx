@@ -13,7 +13,7 @@ const Welcome = () => {
   useEffect(() => {
     const demo = getDemographics();
     if (demo) {
-      navigate("/topics", { replace: true });
+      navigate("/onboarding/topics", { replace: true });
     }
   }, [navigate]);
 
@@ -89,7 +89,7 @@ const Welcome = () => {
           style={{ animationDelay: "0.5s" }}
         >
           <Button 
-            onClick={() => navigate("/questionnaire")}
+            onClick={() => navigate("/onboarding/questionnaire")}
             className="btn-warm w-full py-6 text-lg font-sans"
             size="lg"
           >

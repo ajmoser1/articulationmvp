@@ -283,7 +283,7 @@ const ImpromptuResults = () => {
           <Button
             variant="secondary"
             className="btn-glass font-sans"
-            onClick={() => navigate("/topics")}
+            onClick={() => navigate("/onboarding/topics")}
           >
             Back to Topics
           </Button>

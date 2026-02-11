@@ -79,7 +79,7 @@ const Questionnaire = () => {
     
     if (validateForm()) {
       saveDemographics(formData);
-      navigate("/topics");
+      navigate("/onboarding/topics");
     }
   };
 

@@ -82,7 +82,7 @@ const TopicSelection = () => {
   useEffect(() => {
     const demo = getDemographics();
     if (!demo) {
-      navigate("/questionnaire");
+      navigate("/onboarding/questionnaire");
       return;
     }
 
@@ -92,7 +92,7 @@ const TopicSelection = () => {
 
   const handleTopicSelect = (topic: string) => {
     localStorage.setItem("selectedTopic", topic);
-    navigate("/practice");
+    navigate("/onboarding/practice");
   };
 
   const handleRefresh = () => {
@@ -146,7 +146,7 @@ const TopicSelection = () => {
           <PopoverContent align="end" sideOffset={8} className="w-64">
             <div className="space-y-2">
               <button
-                onClick={() => navigate("/questionnaire")}
+                onClick={() => navigate("/onboarding/questionnaire")}
                 className="w-full flex items-center justify-between px-3 py-2 rounded-md text-sm text-foreground hover:bg-muted/40 transition-colors"
               >
                 Edit demographics
@@ -166,7 +166,7 @@ const TopicSelection = () => {
       {/* Header */}
       <div className="mb-8 flex items-center justify-between relative z-10">
         <button
-          onClick={() => navigate("/questionnaire")}
+          onClick={() => navigate("/onboarding/questionnaire")}
           className="flex items-center gap-2 h-11 px-4 text-muted-foreground hover:text-foreground transition-colors font-sans text-sm"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -201,7 +201,7 @@ const TopicSelection = () => {
           variant="interactive"
           className="p-6 mb-4 opacity-0 animate-fade-in border-2 border-primary/30"
           style={{ animationDelay: "0.15s" }}
-          onClick={() => navigate("/impromptu")}
+                onClick={() => navigate("/impromptu")}
         >
           <div className="flex items-start gap-4">
             <div className="w-10 h-10 rounded-full glass-subtle flex items-center justify-center flex-shrink-0 bg-primary/10">
