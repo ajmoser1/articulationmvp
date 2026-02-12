@@ -210,12 +210,35 @@ const ProgressPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-layered px-6 py-8 pb-28 relative page-transition">
-      <FuturismBlock
-        variant="block-2"
-        className="top-6 right-[-140px] futurism-strong"
-        borderColor="#F72585"
-        zIndex={1}
-      />
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <FuturismBlock
+          variant="block-2"
+          className="top-8 right-[-140px] opacity-42"
+          borderColor="#F72585"
+          blendMode="normal"
+          zIndex={1}
+        />
+        <FuturismBlock
+          variant="block-3"
+          className="top-[42%] left-[-150px] opacity-34"
+          borderColor="#4CC9F0"
+          blendMode="normal"
+          zIndex={1}
+        />
+        <FuturismBlock
+          variant="triangle-2"
+          className="bottom-[-50px] right-[-160px] opacity-32"
+          borderColor="#4ADE80"
+          blendMode="normal"
+          zIndex={1}
+        />
+        <FuturismBlock
+          variant="stripe-1"
+          className="bottom-20 left-[-180px] opacity-38"
+          blendMode="normal"
+          zIndex={1}
+        />
+      </div>
       <div className="max-w-5xl mx-auto w-full flex flex-col gap-6 relative z-10">
         {/* Overall power */}
         <GlassCard className="p-6 space-y-4" hover={false}>
@@ -289,8 +312,8 @@ const ProgressPage = () => {
         </GlassCard>
 
         {/* Activity stats */}
-        <section className="section-block rounded-2xl border border-white/25 bg-white/15 p-4 md:p-5">
-          <p className="text-xs uppercase tracking-[0.15em] text-muted-foreground font-sans mb-3">
+        <section className="section-block space-y-3">
+          <p className="text-xs uppercase tracking-[0.15em] text-muted-foreground font-sans">
             Activity Snapshot
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -318,6 +341,7 @@ const ProgressPage = () => {
               <p className="text-2xl font-serif text-foreground">🔥 {progress.longestStreak}</p>
             </div>
           </div>
+          <div className="section-divider" />
         </section>
 
         {/* Weekly activity heatmap */}
@@ -325,40 +349,39 @@ const ProgressPage = () => {
           <div className="section-accent">
             <h2 className="text-xl font-serif text-foreground">Weekly Activity</h2>
           </div>
-          <div className="rounded-2xl border border-white/25 bg-white/15 p-4 md:p-5 space-y-4">
-            <div className="grid grid-cols-14 gap-1">
-              {heatmapDays.map((d) => (
-                <button
-                  key={d.key}
-                  onClick={() => setSelectedDay(d.key)}
-                  className={`h-5 rounded-sm ${heatColor(d.count)} ${
-                    selectedDay === d.key ? "ring-2 ring-primary" : ""
-                  }`}
-                  title={`${fmtDate(d.date)}: ${d.count} session(s)`}
-                />
-              ))}
-            </div>
-            {selectedDay ? (
-              <div className="text-sm font-sans text-muted-foreground">
-                <p className="mb-1">Sessions on {fmtDate(selectedDay)}:</p>
-                {selectedDayAttempts.length === 0 ? (
-                  <p>None</p>
-                ) : (
-                  <ul className="space-y-1">
-                    {selectedDayAttempts.map((a) => (
-                      <li key={a.id} className="text-foreground">
-                        {getExerciseById(a.exerciseId)?.name ?? a.exerciseId} • {a.score}/100 • +{a.xpEarned} XP
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ) : null}
+          <div className="grid grid-cols-14 gap-1">
+            {heatmapDays.map((d) => (
+              <button
+                key={d.key}
+                onClick={() => setSelectedDay(d.key)}
+                className={`h-5 rounded-sm ${heatColor(d.count)} ${
+                  selectedDay === d.key ? "ring-2 ring-primary" : ""
+                }`}
+                title={`${fmtDate(d.date)}: ${d.count} session(s)`}
+              />
+            ))}
           </div>
+          {selectedDay ? (
+            <div className="text-sm font-sans text-muted-foreground">
+              <p className="mb-1">Sessions on {fmtDate(selectedDay)}:</p>
+              {selectedDayAttempts.length === 0 ? (
+                <p>None</p>
+              ) : (
+                <ul className="space-y-1">
+                  {selectedDayAttempts.map((a) => (
+                    <li key={a.id} className="text-foreground">
+                      {getExerciseById(a.exerciseId)?.name ?? a.exerciseId} • {a.score}/100 • +{a.xpEarned} XP
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ) : null}
+          <div className="section-divider" />
         </section>
 
         {/* Achievements */}
-        <section className="section-block rounded-2xl border border-white/25 bg-white/15 p-6 space-y-4">
+        <section className="section-block space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-serif text-foreground">Achievements</h2>
             <Button variant="secondary" className="btn-glass h-9 px-3">
@@ -372,10 +395,11 @@ const ProgressPage = () => {
               </div>
             ))}
           </div>
+          <div className="section-divider" />
         </section>
 
         {/* Exercise history */}
-        <section className="section-block rounded-2xl border border-white/25 bg-white/15 p-6 space-y-4">
+        <section className="section-block space-y-4">
           <h2 className="text-xl font-serif text-foreground">Exercise History</h2>
           {byExercise.length === 0 ? (
             <p className="text-sm text-muted-foreground font-sans">Start practicing to see progress here!</p>
@@ -402,6 +426,7 @@ const ProgressPage = () => {
               ))}
             </div>
           )}
+          <div className="section-divider" />
         </section>
 
         <Button
