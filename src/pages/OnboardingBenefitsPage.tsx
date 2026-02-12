@@ -107,15 +107,15 @@ const OnboardingBenefitsPage = () => {
           ref={s3.ref}
           className={`section-reveal ${s3.isVisible ? "is-visible" : ""}`}
         >
-          <GlassCard className="p-8 space-y-6" hover={false}>
+          <div className="section-block space-y-6">
             <h2 className="text-4xl font-serif text-foreground font-bold">
               It&apos;s 100% Fixable
             </h2>
             <div className="grid sm:grid-cols-2 gap-3 text-sm font-sans">
-              <p className="glass-subtle p-3 inline-flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600" />Not a permanent trait, just a habit loop.</p>
-              <p className="glass-subtle p-3 inline-flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600" />Average improvement: around 40% in 2 weeks.</p>
-              <p className="glass-subtle p-3 inline-flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600" />Most users feel changes after 3-5 sessions.</p>
-              <p className="glass-subtle p-3 inline-flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600" />You already have the words. We train access speed.</p>
+              <p className="section-accent inline-flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600" />Not a permanent trait, just a habit loop.</p>
+              <p className="section-accent inline-flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600" />Average improvement: around 40% in 2 weeks.</p>
+              <p className="section-accent inline-flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600" />Most users feel changes after 3-5 sessions.</p>
+              <p className="section-accent inline-flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600" />You already have the words. We train access speed.</p>
             </div>
             <div className="rounded-2xl bg-primary/10 border border-primary/20 p-4">
               <p className="text-sm font-sans text-foreground">
@@ -127,17 +127,18 @@ const OnboardingBenefitsPage = () => {
               </div>
               <p className="text-xs text-muted-foreground mt-1 font-sans">52 → 18 → 7 (4 weeks)</p>
             </div>
-          </GlassCard>
+            <div className="section-divider" />
+          </div>
         </section>
 
         <section
           ref={s4.ref}
           className={`section-reveal ${s4.isVisible ? "is-visible" : ""}`}
         >
-          <GlassCard className="p-8 space-y-5" hover={false}>
+          <div className="section-block space-y-5">
             <h2 className="text-3xl font-serif text-foreground">What you&apos;ll gain</h2>
             <div className="grid md:grid-cols-3 gap-3">
-              <div className="glass-subtle p-4">
+              <div className="section-accent">
                 <p className="font-serif text-foreground text-lg mb-2">Career</p>
                 <ul className="text-sm font-sans text-foreground space-y-1">
                   <li>🎯 Nail interviews</li>
@@ -145,7 +146,7 @@ const OnboardingBenefitsPage = () => {
                   <li>🚀 Get promoted faster</li>
                 </ul>
               </div>
-              <div className="glass-subtle p-4">
+              <div className="section-accent">
                 <p className="font-serif text-foreground text-lg mb-2">Personal</p>
                 <ul className="text-sm font-sans text-foreground space-y-1">
                   <li>💬 Express ideas cleanly</li>
@@ -153,7 +154,7 @@ const OnboardingBenefitsPage = () => {
                   <li>✨ Be understood quickly</li>
                 </ul>
               </div>
-              <div className="glass-subtle p-4">
+              <div className="section-accent">
                 <p className="font-serif text-foreground text-lg mb-2">Social</p>
                 <ul className="text-sm font-sans text-foreground space-y-1">
                   <li>👥 Hold attention in groups</li>
@@ -162,18 +163,19 @@ const OnboardingBenefitsPage = () => {
                 </ul>
               </div>
             </div>
-          </GlassCard>
+            <div className="section-divider" />
+          </div>
         </section>
 
         <section
           ref={s5.ref}
           className={`section-reveal ${s5.isVisible ? "is-visible" : ""}`}
         >
-          <GlassCard className="p-8 space-y-4" hover={false}>
+          <div className="section-block space-y-4">
             <h2 className="text-3xl font-serif text-foreground">The Communication Advantage</h2>
             <div className="grid sm:grid-cols-2 gap-3">
               {statCards.map((stat) => (
-                <div key={stat} className="glass-subtle p-4 text-sm font-sans text-foreground">
+                <div key={stat} className="rounded-xl border border-white/25 bg-white/12 p-4 text-sm font-sans text-foreground">
                   {stat}
                 </div>
               ))}
@@ -181,33 +183,35 @@ const OnboardingBenefitsPage = () => {
             <p className="text-xs text-muted-foreground font-sans">
               Sources: executive communication surveys, compensation reports, and hiring trend analyses.
             </p>
-          </GlassCard>
+            <div className="section-divider" />
+          </div>
         </section>
 
         <section
           ref={s6.ref}
           className={`section-reveal ${s6.isVisible ? "is-visible" : ""}`}
         >
-          <GlassCard className="p-8 space-y-5" hover={false}>
+          <div className="section-block space-y-5">
             <h2 className="text-3xl font-serif text-foreground">Your path to clear communication</h2>
             <div className="grid md:grid-cols-3 gap-3">
-              <div className="glass-subtle p-4">
+              <div className="section-accent">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground font-sans">Step 1</p>
                 <p className="font-serif text-foreground text-xl">Measure</p>
                 <p className="text-sm font-sans text-muted-foreground">We map how you speak today. No guessing.</p>
               </div>
-              <div className="glass-subtle p-4">
+              <div className="section-accent">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground font-sans">Step 2</p>
                 <p className="font-serif text-foreground text-xl">Practice</p>
                 <p className="text-sm font-sans text-muted-foreground">Targeted drills in 5-10 minute sessions.</p>
               </div>
-              <div className="glass-subtle p-4">
+              <div className="section-accent">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground font-sans">Step 3</p>
                 <p className="font-serif text-foreground text-xl">Transform</p>
                 <p className="text-sm font-sans text-muted-foreground">Watch the data shift and confidence rise.</p>
               </div>
             </div>
-          </GlassCard>
+            <div className="section-divider" />
+          </div>
         </section>
 
         <section

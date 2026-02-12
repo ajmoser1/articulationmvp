@@ -4,10 +4,10 @@ const STORAGE_KEY = "theme";
 export type Theme = "light" | "dark";
 
 function getStoredTheme(): Theme {
-  if (typeof window === "undefined") return "light";
+  if (typeof window === "undefined") return "dark";
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored === "dark" || stored === "light") return stored;
-  return "light";
+  return "dark";
 }
 
 function setStoredTheme(theme: Theme) {

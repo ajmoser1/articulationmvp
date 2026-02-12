@@ -213,7 +213,7 @@ const ProfilePage = () => {
       window.localStorage.removeItem("onboarding_complete");
     }
     toast({ title: "Data deleted", description: "All local profile data was removed." });
-    window.setTimeout(() => navigate("/onboarding"), 250);
+    navigate("/onboarding", { replace: true });
   };
 
   const version = import.meta.env.VITE_APP_VERSION || "0.1.0-beta";

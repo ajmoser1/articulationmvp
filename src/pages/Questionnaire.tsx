@@ -118,7 +118,7 @@ const Questionnaire = () => {
       />
       <div className="mb-8 relative z-10">
         <button 
-          onClick={() => navigate(returnToProfile ? "/profile" : "/")}
+          onClick={() => navigate(returnToProfile ? "/profile" : "/onboarding")}
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors font-sans text-sm"
         >
           <ArrowLeft className="w-4 h-4" />
